@@ -91,8 +91,14 @@
     <div class="game" id="game">
         <div class="status betting" id="status">Waiting to bet...</div>
         <div class="multiplier" id="multiplier">1.00x</div>
+        <div id="predictorBox" style="margin-top:10px; padding:10px; background:#0b1120; border:1px solid #374151; border-radius:8px; display:none;">
+            <div style="font-size:0.7rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">🔮 PREDICTED CRASH POINT</div>
+            <div id="predictedValue" style="font-size:1.7rem; font-weight:900; color:#38bdf8;">--x</div>
+            <div style="font-size:0.7rem; color:#6b7280; margin-top:3px;">Derived from server seed hash + client seed + nonce</div>
+        </div>
         <div style="font-size:0.75rem; color:#94a3b8; margin-top:6px;">Round nonce: <span id="roundNonce">0</span></div>
     </div>
+</div>
 
     <div class="bet-panel">
         <div>
@@ -155,6 +161,8 @@ const gameEl = document.getElementById('game');
 const statusEl = document.getElementById('status');
 const multiplierEl = document.getElementById('multiplier');
 const roundNonceEl = document.getElementById('roundNonce');
+const predictorBox = document.getElementById('predictorBox');
+const predictedValueEl = document.getElementById('predictedValue');
 const betBtn = document.getElementById('betBtn');
 const cashoutBtn = document.getElementById('cashoutBtn');
 const betAmountInput = document.getElementById('betAmount');
@@ -217,12 +225,14 @@ function updatePreview(){
     const nonce = parseInt(nonceInput.value) || 0;
     const preview = deriveCrashPoint(serverSeedHashInput.value.trim(), clientSeedInput.value.trim(), nonce);
     roundNonceEl.innerText = nonce;
+    predictedValueEl.innerText = preview.toFixed(2) + 'x';
     if (gameState === 'idle') {
         multiplierEl.innerText = preview.toFixed(2) + 'x';
         multiplierEl.className = 'multiplier';
         statusEl.innerText = `Prepared crash: ${preview.toFixed(2)}x`;
         statusEl.className = 'status betting';
     }
+    predictorBox.style.display = 'block';
 }
 
 async function generateRound(){
@@ -319,6 +329,7 @@ function recordRound(mult, won){
     currentNonce++;
     nonceInput.value = currentNonce;
     updatePreview();
+    predictorBox.style.display = 'block';
 }
 
 function renderHistory(){
