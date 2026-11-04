@@ -166,7 +166,6 @@
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button onclick="recordLiveColor('RED')" style="flex: 1; background: #dc2626; padding: 18px; font-size: 1.2rem; border: 2px solid #f87171; border-radius: 8px; font-weight: bold;">🔴 RED</button>
             <button onclick="recordLiveColor('BLACK')" style="flex: 1; background: #1e293b; padding: 18px; font-size: 1.2rem; border: 2px solid #64748b; border-radius: 8px; font-weight: bold;">⬛ BLACK</button>
-            <button onclick="recordLiveColor('GREEN')" style="flex: 0.5; background: #059669; padding: 18px; font-size: 1.2rem; border: 2px solid #34d399; border-radius: 8px; font-weight: bold;">🟢 0</button>
         </div>
 
         <!-- Prominent Next Predicted Number Banner -->
@@ -493,14 +492,14 @@ class RouletteAIEngine {
 class MarkovPatternEngine {
     constructor() {
         this.transitions = {
-            RED: { RED: 1, BLACK: 1, GREEN: 0 },
-            BLACK: { RED: 1, BLACK: 1, GREEN: 0 },
-            GREEN: { RED: 1, BLACK: 1, GREEN: 0 }
+            RED: { RED: 1, BLACK: 1 },
+            BLACK: { RED: 1, BLACK: 1 }
         };
         this.history = [];
     }
 
     record(color) {
+        if (color !== 'RED' && color !== 'BLACK') return;
         if (this.history.length > 0) {
             const last = this.history[this.history.length - 1];
             if (this.transitions[last] && this.transitions[last][color] !== undefined) {
@@ -566,9 +565,8 @@ class MarkovPatternEngine {
     clear() {
         this.history = [];
         this.transitions = {
-            RED: { RED: 1, BLACK: 1, GREEN: 0 },
-            BLACK: { RED: 1, BLACK: 1, GREEN: 0 },
-            GREEN: { RED: 1, BLACK: 1, GREEN: 0 }
+            RED: { RED: 1, BLACK: 1 },
+            BLACK: { RED: 1, BLACK: 1 }
         };
     }
 }
@@ -652,20 +650,19 @@ function updateNextSpinCard(roll) {
 function updatePureColorSignal(currentRoll, forecastList) {
     const redCount = forecastList.filter(f => f.color === 'RED').length;
     const blackCount = forecastList.filter(f => f.color === 'BLACK').length;
-    const total = forecastList.length;
-
-    const redWeight = ((redCount / total) * 100).toFixed(1);
-    const blackWeight = ((blackCount / total) * 100).toFixed(1);
+    const total = redCount + blackCount;
+    const redWeight = total ? ((redCount / total) * 100).toFixed(1) : '50.0';
+    const blackWeight = total ? ((blackCount / total) * 100).toFixed(1) : '50.0';
 
     document.getElementById('redProbSignal').innerText = `${redWeight}%`;
     document.getElementById('blackProbSignal').innerText = `${blackWeight}%`;
 
     const pickElem = document.getElementById('predictedColorPick');
     pickElem.innerText = currentRoll.color;
-    pickElem.style.color = currentRoll.color === 'RED' ? '#f87171' : (currentRoll.color === 'BLACK' ? '#60a5fa' : '#34d399');
+    pickElem.style.color = currentRoll.color === 'RED' ? '#f87171' : '#60a5fa';
 
     const recBox = document.getElementById('colorBetRecommendation');
-    recBox.innerText = `🎯 BET RECOMMENDATION: HIGH-CONFIDENCE ENTRY ON ${currentRoll.color} (POCKET #${currentRoll.pocket})`;
+    recBox.innerText = `🎯 BET RECOMMENDATION: ${currentRoll.color} (POCKET #${currentRoll.pocket})`;
 
     const hmacBox = document.getElementById('rawHmacOutput');
     if (hmacBox) hmacBox.innerText = `HMAC-SHA256 (${currentRoll.casinoMode}): ${currentRoll.fullHex}`;
@@ -700,7 +697,7 @@ function renderFeltGrid(hitCounts, wheelVariant) {
     feltBoard.innerHTML = '';
 
     const maxPocket = 36;
-    for (let i = 0; i <= maxPocket; i++) {
+    for (let i = 1; i <= 36; i++) {
         const cell = document.createElement('div');
         cell.className = 'felt-cell';
         
