@@ -328,6 +328,56 @@
             </table>
         </div>
     </div>
+
+    <!-- COIN FLIP PREDICTOR CARD -->
+    <div class="card" style="border: 2px solid var(--accent-glow); background: linear-gradient(180deg, rgba(139, 92, 246, 0.12) 0%, var(--panel-bg) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label style="color: #c084fc; font-size: 0.9rem;">🪙 PROVABLY FAIR COIN FLIP PREDICTOR</label>
+            <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: bold;">HMAC-SHA256 Deterministic</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">
+            Derives HEADS or TAILS from HMAC-SHA256(serverSeed, clientSeed:nonce). First bit of the digest decides the flip.
+        </p>
+
+        <div class="grid-3" style="margin-top: 10px;">
+            <div class="stat-box" style="border-color: #f87171; background: rgba(239, 68, 68, 0.08);">
+                <label style="color: #f87171;">HEADS PROBABILITY</label>
+                <div id="coinHeadsVal" class="stat-val" style="font-size: 1.8rem; color: #f87171;">50.0%</div>
+                <div class="stat-sub">Derived HMAC match weight</div>
+            </div>
+            <div class="stat-box" style="border-color: #38bdf8; background: rgba(56, 189, 248, 0.08);">
+                <label style="color: #38bdf8;">TAILS PROBABILITY</label>
+                <div id="coinTailsVal" class="stat-val" style="font-size: 1.8rem; color: #38bdf8;">50.0%</div>
+                <div class="stat-sub">Derived HMAC match weight</div>
+            </div>
+            <div class="stat-box" style="border-color: var(--accent-glow); background: rgba(139, 92, 246, 0.12);">
+                <label style="color: var(--accent-glow);">PREDICTED FLIP</label>
+                <div id="coinPredictedVal" class="stat-val" style="font-size: 2rem; text-shadow: 0 0 15px rgba(255,255,255,0.5);">--</div>
+                <div class="stat-sub">Exact deterministic signal</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; background: #080b10; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+            <div style="font-size: 0.78rem; color: var(--text-muted);">Flip Nonce: <span id="coinNonceLabel">0</span></div>
+            <button onclick="advanceCoinNonce()" style="background: linear-gradient(90deg, #10b981, #059669); padding: 8px 16px; font-size: 0.85rem;">⚡ Flip Next Nonce</button>
+        </div>
+
+        <div id="coinFlipAnim" style="margin-top: 14px; height: 90px; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; text-align: center; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);"></div>
+
+        <table style="margin-top: 12px; width: 100%; font-size: 0.8rem;">
+            <thead>
+                <tr>
+                    <th style="padding: 6px; border-bottom: 1px solid var(--border-color);">Nonce</th>
+                    <th style="padding: 6px; border-bottom: 1px solid var(--border-color);">Result</th>
+                    <th style="padding: 6px; border-bottom: 1px solid var(--border-color);">Hex Digest (first 8)</th>
+                    <th style="padding: 6px; border-bottom: 1px solid var(--border-color);">Bit 0</th>
+                </tr>
+            </thead>
+            <tbody id="coinHistoryTable">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <!-- Modal Container for Verification Code -->
@@ -622,113 +672,12 @@ async function runPredictor() {
         renderTable(forecastList);
         updateForwardWave(forecastList.slice(0, 5));
         updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
+        runCoinFlipPredictor();
     } catch (err) {
         console.error("Predictor Error:", err);
     }
 }
 
-// (remaining UI functions unchanged below)
-
-    const serverSeed = document.getElementById('serverSeed').value || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
-    const clientSeed = document.getElementById('clientSeed').value || 'roulette_client_master_entropy';
-    const nonce = parseInt(document.getElementById('nonce').value) || 0;
-    const casinoMode = document.getElementById('casinoMode').value;
-    const wheelVariant = document.getElementById('wheelVariant').value;
-    const forecastCount = Math.min(250, Math.max(1, parseInt(document.getElementById('forecastCount').value) || 50));
-
-    try {
-        document.getElementById('targetNonceLabel').innerText = nonce;
-        document.getElementById('nextNonceNum').innerText = nonce + 1;
-        document.getElementById('nextNonceSubLabel').innerText = nonce + 1;
-        document.getElementById('nextHighlightNonce').innerText = nonce + 1;
-
-        // Current target roll (Nonce N)
-        const currentRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
-        activeTargetPocket = currentRoll.pocket;
-
-        // Next spin prediction (Nonce N+1)
-        const nextRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce + 1, casinoMode, wheelVariant);
-        updateNextSpinCard(nextRoll);
-
-        // Update the top prominent Next Number Highlight banner
-        const nextPocketElem = document.getElementById('nextHighlightPocket');
-        const nextSubElem = document.getElementById('nextHighlightSub');
-        const pocketColor = nextRoll.color === 'RED' ? '#f87171' : (nextRoll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-        nextPocketElem.innerHTML = `<span style="color: ${pocketColor}">POCKET #${nextRoll.pocket} (${nextRoll.color})</span>`;
-        nextSubElem.innerText = `Sector: ${nextRoll.dozen} | ${nextRoll.column} | ${nextRoll.pocket === 0 || nextRoll.pocket === "00" ? "Zero" : (nextRoll.isEven ? "Even" : "Odd")}`;
-
-        // Calculate sequence forecast
-        const forecastList = [];
-        const hitCounts = {};
-        for (let i = 0; i < forecastCount; i++) {
-            const roll = await deriveRouletteRoll(serverSeed, clientSeed, nonce + i, casinoMode, wheelVariant);
-            forecastList.push(roll);
-            hitCounts[roll.pocket] = (hitCounts[roll.pocket] || 0) + 1;
-        }
-
-        updatePureColorSignal(currentRoll, forecastList);
-        updateTargetBadge(currentRoll);
-        drawWheel(currentRoll.pocket);
-        renderFeltGrid(hitCounts, wheelVariant);
-        renderTable(forecastList);
-        updateForwardWave(forecastList.slice(0, 5));
-        updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
-    } catch (err) {
-        console.error("Predictor Error:", err);
-    }
-}
-
-function updateNextSpinCard(roll) {
-    const colorVal = document.getElementById('nextSpinColorVal');
-    colorVal.innerText = roll.color;
-    colorVal.style.color = roll.color === 'RED' ? '#f87171' : (roll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-
-    document.getElementById('nextSpinPocketVal').innerText = `#${roll.pocket}`;
-    const parityText = roll.pocket === 0 || roll.pocket === "00" ? "Zero" : (roll.isEven ? "Even" : "Odd");
-    document.getElementById('nextSpinDozenVal').innerText = `${roll.dozen} / ${parityText}`;
-}
-
-function updatePureColorSignal(currentRoll, forecastList) {
-    const redCount = forecastList.filter(f => f.color === 'RED').length;
-    const blackCount = forecastList.filter(f => f.color === 'BLACK').length;
-    const total = forecastList.length;
-
-    const redWeight = ((redCount / total) * 100).toFixed(1);
-    const blackWeight = ((blackCount / total) * 100).toFixed(1);
-
-    document.getElementById('redProbSignal').innerText = `${redWeight}%`;
-    document.getElementById('blackProbSignal').innerText = `${blackWeight}%`;
-
-    const pickElem = document.getElementById('predictedColorPick');
-    pickElem.innerText = currentRoll.color;
-    pickElem.style.color = currentRoll.color === 'RED' ? '#f87171' : (currentRoll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-
-    const recBox = document.getElementById('colorBetRecommendation');
-    recBox.innerText = `🎯 BET RECOMMENDATION: HIGH-CONFIDENCE ENTRY ON ${currentRoll.color} (POCKET #${currentRoll.pocket})`;
-}
-
-function updateForwardWave(waveList) {
-    const container = document.getElementById('forwardWaveGrid');
-    if (!container) return;
-    container.innerHTML = '';
-
-    waveList.forEach((roll) => {
-        const card = document.createElement('div');
-        card.style.background = '#080b10';
-        card.style.border = '1px solid var(--border-color)';
-        card.style.borderRadius = '8px';
-        card.style.padding = '10px';
-        card.style.textAlign = 'center';
-
-        const colorHex = roll.color === 'RED' ? '#f87171' : (roll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-        card.innerHTML = `
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Nonce #${roll.nonce}</div>
-            <div style="font-size: 1.2rem; font-weight: bold; color: ${colorHex}; margin: 4px 0;">${roll.color}</div>
-            <div style="font-size: 0.85rem; color: #fff;">Pocket #${roll.pocket}</div>
-        `;
-        container.appendChild(card);
-    });
-}
 
 function renderFeltGrid(hitCounts, wheelVariant) {
     const feltBoard = document.getElementById('feltBoard');
@@ -1070,7 +1019,98 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     runPredictor();
+    runCoinFlipPredictor();
 });
+
+// ============================================================================
+// Coin Flip Predictor (HMAC-SHA256 deterministic)
+// ============================================================================
+let coinHistory = [];
+
+async function deriveCoinFlip(serverSeed, clientSeed, nonce, casinoMode) {
+    const enc = new TextEncoder();
+    const keyData = enc.encode(serverSeed || 'default_server_seed');
+    let msgStr;
+    switch (casinoMode) {
+        case 'betpanda':
+        case 'bustabit':
+            msgStr = `${clientSeed}:${nonce}:${serverSeed}`;
+            break;
+        case 'betfury':
+            msgStr = `${serverSeed}:${clientSeed}:${nonce}`;
+            break;
+        case 'roobet':
+            msgStr = `${clientSeed}:${nonce}:0`;
+            break;
+        case 'stake':
+        default:
+            msgStr = `${clientSeed}:${nonce}`;
+    }
+    const msgData = enc.encode(msgStr);
+    const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+    const buf = new Uint8Array(sig);
+    // First bit of first byte decides HEADS (1) or TAILS (0)
+    const bit0 = (buf[0] >> 7) & 1;
+    const result = bit0 === 1 ? 'HEADS' : 'TAILS';
+    return { nonce, result, bit0, hexChunk: Array.from(buf.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join('') };
+}
+
+async function runCoinFlipPredictor() {
+    const serverSeed = document.getElementById('serverSeed').value || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+    const clientSeed = document.getElementById('clientSeed').value || 'roulette_client_master_entropy';
+    const nonce = parseInt(document.getElementById('nonce').value) || 0;
+    const casinoMode = document.getElementById('casinoMode').value;
+
+    try {
+        const flip = await deriveCoinFlip(serverSeed, clientSeed, nonce, casinoMode);
+
+        document.getElementById('coinNonceLabel').innerText = nonce;
+        document.getElementById('coinHeadsVal').innerText = flip.result === 'HEADS' ? '100.0%' : '0.0%';
+        document.getElementById('coinTailsVal').innerText = flip.result === 'TAILS' ? '100.0%' : '0.0%';
+
+        const predElem = document.getElementById('coinPredictedVal');
+        predElem.innerText = flip.result;
+        predElem.style.color = flip.result === 'HEADS' ? '#f87171' : '#38bdf8';
+        predElem.style.textShadow = flip.result === 'HEADS' ? '0 0 15px rgba(239, 68, 68, 0.6)' : '0 0 15px rgba(56, 189, 248, 0.6)';
+
+        const anim = document.getElementById('coinFlipAnim');
+        anim.innerText = flip.result === 'HEADS' ? 'HEADS' : 'TAILS';
+        anim.style.color = flip.result === 'HEADS' ? '#f87171' : '#38bdf8';
+
+        coinHistory.unshift(flip);
+        if (coinHistory.length > 50) coinHistory.pop();
+        renderCoinHistory();
+    } catch (err) {
+        console.error('Coin Flip Predictor Error:', err);
+    }
+}
+
+function renderCoinHistory() {
+    const tbody = document.getElementById('coinHistoryTable');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    coinHistory.forEach(item => {
+        const tr = document.createElement('tr');
+        const colorStyle = item.result === 'HEADS' ? 'color: #f87171; font-weight: bold;' : 'color: #38bdf8; font-weight: bold;';
+        tr.innerHTML = `
+            <td style="padding: 6px; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted);">#${item.nonce}</td>
+            <td style="padding: 6px; border-bottom: 1px solid var(--border-color); ${colorStyle}">${item.result}</td>
+            <td style="padding: 6px; border-bottom: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-muted);">${item.hexChunk}</td>
+            <td style="padding: 6px; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: #38bdf8; font-weight: bold;">${item.bit0}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function advanceCoinNonce() {
+    const input = document.getElementById('nonce');
+    let val = parseInt(input.value) || 0;
+    val = Math.max(0, val + 1);
+    input.value = val;
+    runCoinFlipPredictor();
+    runPredictor();
+}
 </script>
 </body>
 </html>
