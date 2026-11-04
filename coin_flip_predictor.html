@@ -316,28 +316,25 @@ function adjustCoinNonce(delta) {
 async function runStreak() {
   const serverSeed = document.getElementById('serverSeed').value || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
   const clientSeed = document.getElementById('clientSeed').value || 'coin_client_master_entropy';
-  const startNonce = parseInt(document.getElementById('nonce').value) || 0;
+  const nonce = parseInt(document.getElementById('nonce').value) || 0;
   const casinoMode = document.getElementById('casinoMode').value;
   const count = parseInt(document.getElementById('streakCount').value) || 1;
 
   buildStreakRow(count);
   streakResults = [];
 
-  let currentNonce = startNonce;
   for (let i = 0; i < count; i++) {
-    const flip = await deriveCoinFlip(serverSeed, clientSeed, currentNonce, casinoMode);
-    streakResults.push({ nonce: currentNonce, result: flip.result, won: true, bit0: flip.bit0, hexChunk: flip.hexChunk, confidence: flip.confidence });
+    const flip = await deriveCoinFlip(serverSeed, clientSeed, nonce, casinoMode);
+    streakResults.push({ nonce: nonce, result: flip.result, won: true, bit0: flip.bit0, hexChunk: flip.hexChunk, confidence: flip.confidence });
     coinHistory.unshift(flip);
     if (coinHistory.length > 100) coinHistory.pop();
-    currentNonce++;
   }
 
   const mult = multFor(count);
   updateStreakUI(count, streakResults, mult, false);
   renderCoinHistory();
 
-  document.getElementById('nonce').value = currentNonce;
-  document.getElementById('coinNonceLabel').innerText = currentNonce;
+  document.getElementById('coinNonceLabel').innerText = nonce;
   runCoinFlipPredictor();
 }
 
