@@ -660,6 +660,7 @@ async function runPredictor() {
         renderFeltGrid(hitCounts, wheelVariant);
         renderTable(forecastList);
         updateForwardWave(forecastList.slice(0, 5));
+        updateLowThirdLowestMath(forecastList);
         updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
     } catch (err) {
         console.error("Predictor Error:", err);
