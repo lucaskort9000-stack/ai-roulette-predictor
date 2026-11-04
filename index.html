@@ -79,6 +79,10 @@
         <p>BetPanda.io AI Neural Signal Matrix &bull; SHA-256 Hashed Server Seed Commitment Engine &bull; Multi-Spin Forward Wave Predictor</p>
     </header>
 
+    <div style="font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-bottom: 8px; max-width: 1280px;">
+        ⚠️ BetPanda outcomes are cryptographically random. This tool derives the same HMAC-SHA256 pockets as BetPanda's provably-fair algorithm for the given seeds — it does not predict future random spins.
+    </div>
+
     <!-- Seed & Mode Controls Card -->
     <div class="card">
         <div class="grid-2">
@@ -95,7 +99,8 @@
             <div>
                 <label>Casino Algorithm Mode</label>
                 <select id="casinoMode" onchange="runPredictor()">
-                    <option value="betpanda" selected>BetPanda.io Optimized AI (clientSeed:nonce:serverSeed)</option>
+                    <option value="betpanda" selected>BetPanda.io Standard (clientSeed:nonce)</option>
+                    <option value="betpanda-alt">BetPanda.io Alt (clientSeed:nonce:serverSeed)</option>
                     <option value="stake">Stake / Standard HMAC-SHA256 (clientSeed:nonce)</option>
                     <option value="betfury">BetFury / BC.Game (serverSeed:clientSeed:nonce)</option>
                     <option value="roobet">Roobet Format (clientSeed:nonce:cursor)</option>
@@ -248,6 +253,9 @@
         <div id="colorBetRecommendation" style="font-size: 0.9rem; background: #080b10; border: 1px solid var(--accent-gold); padding: 12px; border-radius: 8px; color: var(--accent-gold); font-weight: bold; text-align: center;">
             Calculating Exact Spin Signal...
         </div>
+        <div id="rawHmacOutput" style="font-size: 0.7rem; background: #080b10; border: 1px solid var(--border-color); padding: 8px; border-radius: 8px; color: #38bdf8; font-family: monospace; word-break: break-all; margin-top: 8px;">
+            HMAC-SHA256: computing...
+        </div>
     </div>
 
     <!-- LIVE NEXT-SPIN PREDICTOR CARD -->
@@ -372,6 +380,8 @@ class RouletteAIEngine {
     buildMessage(serverSeed, clientSeed, nonce, casinoMode) {
         switch (casinoMode) {
             case 'betpanda':
+                return `${clientSeed}:${nonce}`;
+            case 'betpanda-alt':
                 return `${clientSeed}:${nonce}:${serverSeed}`;
             case 'betfury':
                 return `${serverSeed}:${clientSeed}:${nonce}`;
@@ -398,7 +408,7 @@ class RouletteAIEngine {
         const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
         const buf = new Uint8Array(sig);
 
-        // Use the first 4 bytes as a big-endian u32 for maximum precision.
+        // Use bytes 0-3 as big-endian u32 for maximum precision.
         const view = new DataView(buf.buffer, buf.byteOffset, 4);
         const u32 = view.getUint32(0, false);
 
@@ -435,7 +445,9 @@ class RouletteAIEngine {
             u32,
             wheelPosition,
             sectorIndex,
+            fullHex: Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join(''),
             hexChunk: Array.from(buf.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join(''),
+            hmacSig: buf,
             isEven,
             isHigh,
             dozen,
@@ -627,57 +639,6 @@ async function runPredictor() {
     }
 }
 
-// (remaining UI functions unchanged below)
-
-    const serverSeed = document.getElementById('serverSeed').value || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
-    const clientSeed = document.getElementById('clientSeed').value || 'roulette_client_master_entropy';
-    const nonce = parseInt(document.getElementById('nonce').value) || 0;
-    const casinoMode = document.getElementById('casinoMode').value;
-    const wheelVariant = document.getElementById('wheelVariant').value;
-    const forecastCount = Math.min(250, Math.max(1, parseInt(document.getElementById('forecastCount').value) || 50));
-
-    try {
-        document.getElementById('targetNonceLabel').innerText = nonce;
-        document.getElementById('nextNonceNum').innerText = nonce + 1;
-        document.getElementById('nextNonceSubLabel').innerText = nonce + 1;
-        document.getElementById('nextHighlightNonce').innerText = nonce + 1;
-
-        // Current target roll (Nonce N)
-        const currentRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
-        activeTargetPocket = currentRoll.pocket;
-
-        // Next spin prediction (Nonce N+1)
-        const nextRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce + 1, casinoMode, wheelVariant);
-        updateNextSpinCard(nextRoll);
-
-        // Update the top prominent Next Number Highlight banner
-        const nextPocketElem = document.getElementById('nextHighlightPocket');
-        const nextSubElem = document.getElementById('nextHighlightSub');
-        const pocketColor = nextRoll.color === 'RED' ? '#f87171' : (nextRoll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-        nextPocketElem.innerHTML = `<span style="color: ${pocketColor}">POCKET #${nextRoll.pocket} (${nextRoll.color})</span>`;
-        nextSubElem.innerText = `Sector: ${nextRoll.dozen} | ${nextRoll.column} | ${nextRoll.pocket === 0 || nextRoll.pocket === "00" ? "Zero" : (nextRoll.isEven ? "Even" : "Odd")}`;
-
-        // Calculate sequence forecast
-        const forecastList = [];
-        const hitCounts = {};
-        for (let i = 0; i < forecastCount; i++) {
-            const roll = await deriveRouletteRoll(serverSeed, clientSeed, nonce + i, casinoMode, wheelVariant);
-            forecastList.push(roll);
-            hitCounts[roll.pocket] = (hitCounts[roll.pocket] || 0) + 1;
-        }
-
-        updatePureColorSignal(currentRoll, forecastList);
-        updateTargetBadge(currentRoll);
-        drawWheel(currentRoll.pocket);
-        renderFeltGrid(hitCounts, wheelVariant);
-        renderTable(forecastList);
-        updateForwardWave(forecastList.slice(0, 5));
-        updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
-    } catch (err) {
-        console.error("Predictor Error:", err);
-    }
-}
-
 function updateNextSpinCard(roll) {
     const colorVal = document.getElementById('nextSpinColorVal');
     colorVal.innerText = roll.color;
@@ -705,6 +666,9 @@ function updatePureColorSignal(currentRoll, forecastList) {
 
     const recBox = document.getElementById('colorBetRecommendation');
     recBox.innerText = `🎯 BET RECOMMENDATION: HIGH-CONFIDENCE ENTRY ON ${currentRoll.color} (POCKET #${currentRoll.pocket})`;
+
+    const hmacBox = document.getElementById('rawHmacOutput');
+    if (hmacBox) hmacBox.innerText = `HMAC-SHA256 (${currentRoll.casinoMode}): ${currentRoll.fullHex}`;
 }
 
 function updateForwardWave(waveList) {
@@ -1002,7 +966,7 @@ async function verifyRoulette() {
 
     const enc = new TextEncoder();
     let msgStr = \`\${clientSeed}:\${nonce}\`;
-    if (casinoMode === "betpanda") msgStr = \`\${clientSeed}:\${nonce}:\${serverSeed}\`;
+    if (casinoMode === "betpanda-alt") msgStr = \`\${clientSeed}:\${nonce}:\${serverSeed}\`;
     else if (casinoMode === "betfury") msgStr = \`\${serverSeed}:\${clientSeed}:\${nonce}\`;
 
     const keyData = enc.encode(serverSeed);
