@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Provably Fair Roulette 100,000x Quantum Predictor Studio</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Provably Fair Roulette Red/Black BetPanda AI Engine Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -27,45 +26,34 @@
         header { text-align: center; margin-bottom: 5px; }
         header h1 { font-size: 2rem; color: #fff; margin-bottom: 5px; letter-spacing: -0.02em; background: linear-gradient(90deg, #f59e0b, #38bdf8, #8b5cf6, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         header p { color: var(--text-muted); font-size: 0.88rem; }
-        
         .card { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 30px rgba(0,0,0,0.8); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
         @media(max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
-        
         label { font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; display: block; font-weight: bold; }
         input, select { width: 100%; background: #080b10; border: 1px solid var(--border-color); color: var(--text-main); padding: 11px 14px; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
         input:focus, select:focus { border-color: var(--accent-glow); }
-        
         button { background: #3b82f6; color: white; border: none; padding: 11px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: background 0.2s, transform 0.1s; }
         button:hover { background: #2563eb; }
         button:active { transform: scale(0.98); }
         .btn-group { display: flex; gap: 10px; }
-        
         .pocket-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; font-weight: bold; font-size: 0.9rem; color: #fff; border: 2px solid rgba(255,255,255,0.25); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         .bg-red { background: radial-gradient(circle, #f87171, #dc2626); box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
         .bg-black { background: radial-gradient(circle, #475569, #0f172a); box-shadow: 0 0 12px rgba(30, 41, 59, 0.8); border-color: #64748b; }
         .bg-green { background: radial-gradient(circle, #34d399, #059669); box-shadow: 0 0 12px rgba(16, 185, 129, 0.5); }
-        
         .stat-box { background: #080b10; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
         .stat-val { font-size: 1.2rem; font-weight: bold; color: #fff; margin-top: 4px; }
         .stat-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
-
         canvas { width: 240px; height: 240px; margin: 0 auto; display: block; background: #080b10; border-radius: 50%; border: 4px solid var(--border-color); cursor: pointer; box-shadow: 0 0 25px rgba(139,92,246,0.2), inset 0 0 25px rgba(0,0,0,0.9); }
-
-        /* Interactive Roulette Betting Grid Felt */
         .roulette-felt { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; width: 100%; background: #0b130e; padding: 12px; border-radius: 8px; border: 2px solid #059669; }
         .felt-cell { padding: 10px 4px; text-align: center; font-weight: bold; font-size: 0.8rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s; position: relative; }
         .felt-cell:hover { transform: scale(1.05); z-index: 2; border-color: #fff; }
         .felt-cell .hit-count { position: absolute; top: 2px; right: 4px; font-size: 0.6rem; color: var(--accent-gold); font-weight: normal; }
-
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
         th { color: var(--text-muted); font-weight: normal; font-size: 0.74rem; text-transform: uppercase; }
-        
         .color-signal-box { background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(51, 65, 85, 0.2) 100%); border: 2px solid var(--accent-glow); padding: 18px; border-radius: 12px; display: flex; flex-direction: column; gap: 12px; }
-
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(6px); }
         .modal-content { background: var(--panel-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; width: 90%; max-width: 680px; display: flex; flex-direction: column; gap: 15px; }
         textarea { width: 100%; height: 180px; background: #080b10; color: #38bdf8; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; font-size: 0.82rem; resize: none; }
@@ -83,7 +71,6 @@
         ⚠️ BetPanda outcomes are cryptographically random. This tool derives the same HMAC-SHA256 pockets as BetPanda's provably-fair algorithm for the given seeds — it does not predict future random spins.
     </div>
 
-    <!-- Seed & Mode Controls Card -->
     <div class="card">
         <div class="grid-2">
             <div>
@@ -101,7 +88,6 @@
                 <select id="casinoMode" onchange="runPredictor()">
                     <option value="betpanda" selected>BetPanda.io Standard (clientSeed:nonce)</option>
                     <option value="betpanda-alt">BetPanda.io Alt (clientSeed:nonce:serverSeed)</option>
-                    <option value="stake">Stake / Standard HMAC-SHA256 (clientSeed:nonce)</option>
                     <option value="betfury">BetFury / BC.Game (serverSeed:clientSeed:nonce)</option>
                     <option value="roobet">Roobet Format (clientSeed:nonce:cursor)</option>
                     <option value="bustabit">Bustabit Salted Variant</option>
@@ -123,7 +109,6 @@
                     <button onclick="adjustNonce(-1)">-1</button>
                     <button onclick="adjustNonce(1)">+1</button>
                 </div>
-                <!-- Quick Nonce Jump Buttons -->
                 <div style="display: flex; gap: 4px; margin-top: 6px;">
                     <button onclick="adjustNonce(-10)" style="padding: 4px 8px; font-size: 0.7rem; background: #334155; flex: 1;">-10</button>
                     <button onclick="adjustNonce(-5)" style="padding: 4px 8px; font-size: 0.7rem; background: #334155; flex: 1;">-5</button>
@@ -154,36 +139,29 @@
         </div>
     </div>
 
-    <!-- 100% ACCURACY NONCE AUTO-SYNC LOCKER PANEL -->
     <div class="card" style="border: 2px solid var(--accent-green); background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, var(--panel-bg) 100%);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="color: #34d399; font-size: 0.9rem;">🎯 INSTANT 1-TAP COLOR CLICKER & NEXT NUMBER PREDICTOR</label>
             <span style="font-size: 0.78rem; color: var(--accent-gold); font-weight: bold;" id="syncLockStatus">STATUS: READY FOR INPUT</span>
         </div>
         <p style="font-size: 0.88rem; color: var(--text-main); font-weight: bold;">Tap the color that JUST landed in your casino to instantly predict the EXACT NEXT NUMBER & COLOR (Nonce +1):</p>
-
-        <!-- Dynamic Color Tap Pad -->
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button onclick="recordLiveColor('RED')" style="flex: 1; background: #dc2626; padding: 18px; font-size: 1.2rem; border: 2px solid #f87171; border-radius: 8px; font-weight: bold;">🔴 RED</button>
             <button onclick="recordLiveColor('BLACK')" style="flex: 1; background: #1e293b; padding: 18px; font-size: 1.2rem; border: 2px solid #64748b; border-radius: 8px; font-weight: bold;">⬛ BLACK</button>
         </div>
-
-        <!-- Prominent Next Predicted Number Banner -->
         <div id="nextNumberHighlight" style="margin-top: 14px; background: #080b10; border: 2px solid #38bdf8; border-radius: 10px; padding: 14px; text-align: center; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);">
             <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">NEXT SPIN PREDICTED TARGET NUMBER (Nonce #<span id="nextHighlightNonce">1</span>)</div>
             <div id="nextHighlightPocket" style="font-size: 2.2rem; font-weight: bold; color: #38bdf8; margin: 4px 0;">POCKET #--</div>
             <div id="nextHighlightSub" style="font-size: 0.85rem; color: var(--accent-gold); font-weight: bold;">Tap any color above to unlock prediction</div>
         </div>
-
         <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; background: #080b10; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
             <div style="font-size: 0.78rem; color: var(--text-muted);">Recorded Sequence: <span id="recordedSeqDisplay" style="color: #38bdf8; font-weight: bold;">(None)</span></div>
             <button onclick="clearRecordedSeq()" style="background: #475569; padding: 4px 10px; font-size: 0.7rem;">Clear History</button>
         </div>
-
         <div class="grid-3" style="align-items: flex-end; margin-top: 10px;">
             <div style="grid-column: span 2;">
                 <label>Enter Specific Landed Number or Colors</label>
-                <input type="text" id="recentHistoryInput" placeholder="e.g. 17 or RED or 32, RED">
+                <input type="text" id="recentHistoryInput" placeholder="e.g. RED or BLACK">
             </div>
             <div>
                 <button onclick="advanceNonceByOneOnce()" style="background: var(--accent-green); width: 100%;">⚡ Sync & Predict Next Number</button>
@@ -191,7 +169,6 @@
         </div>
     </div>
 
-    <!-- ADAPTIVE MARKOV & PATTERN RECURRENCE MATRIX CARD -->
     <div class="card" style="border: 2px solid var(--accent-glow); background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(15, 20, 31, 0.95) 100%);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="color: #c084fc; font-size: 0.9rem;">🧠 ADAPTIVE PATTERN RECURRENCE & MARKOV PROBABILITY</label>
@@ -216,7 +193,6 @@
         </div>
     </div>
 
-    <!-- PURE RED VS BLACK PREDICTION HIGHLIGHT CARD -->
     <div class="color-signal-box">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="color: #c084fc; font-size: 0.9rem;">🎯 EXACT CRYPTO-DETERMINISTIC COLOR SIGNAL MATRIX (Spin Nonce #<span id="targetNonceLabel">0</span>)</label>
@@ -239,7 +215,6 @@
                 <div id="blackProbSub" class="stat-sub">Deterministic HMAC SHA-256 Byte Match</div>
             </div>
         </div>
-        <!-- AI Confidence Bar -->
         <div style="background: #080b10; padding: 6px; border-radius: 6px; border: 1px solid var(--border-color);">
             <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px;">
                 <span>DETERMINISTIC SIGNAL MATCH STRENGTH</span>
@@ -257,7 +232,6 @@
         </div>
     </div>
 
-    <!-- LIVE NEXT-SPIN PREDICTOR CARD -->
     <div class="card" style="border: 2px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, #0f141f 100%);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="color: #a78bfa; font-size: 0.95rem;">⚡ LIVE NEXT-SPIN PREDICTOR (Nonce #<span id="nextNonceNum">1</span>)</label>
@@ -282,18 +256,14 @@
         </div>
     </div>
 
-    <!-- 5-SPIN FORWARD WAVE PREDICTOR -->
     <div class="card" style="border-color: var(--accent-glow); background: linear-gradient(180deg, rgba(139, 92, 246, 0.06) 0%, var(--panel-bg) 100%);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <label style="color: #c084fc;">🤖 5-SPIN FORWARD AI NEURAL WAVE PREDICTION</label>
             <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: bold;">Consecutive Nonce Signal Chain</span>
         </div>
-        <div class="grid-5" id="forwardWaveGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
-            <!-- Dynamically populated 5-spin forecast cards -->
-        </div>
+        <div class="grid-5" id="forwardWaveGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;"></div>
     </div>
 
-    <!-- 3D WHEEL & BETTING FELT HEATMAP -->
     <div class="grid-2">
         <div class="card" style="align-items: center; justify-content: center;">
             <label style="align-self: flex-start;">Target Pocket Visualizer</label>
@@ -302,38 +272,36 @@
         </div>
         <div class="card">
             <label>Interactive Roulette Felt Heatmap Grid</label>
-            <div id="feltBoard" class="roulette-felt">
-                <!-- Dynamically populated 37/38 pockets -->
-            </div>
+            <div id="feltBoard" class="roulette-felt"></div>
         </div>
     </div>
 
-    <!-- LOW & THIRD LOWEST NUMBER MATH SECTION -->
+    <!-- LOWEST & THIRD UNIQUE LOWEST NUMBER MATH SECTION -->
     <div class="card" style="border: 2px solid var(--accent-gold); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--panel-bg) 100%);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <label style="color: #f59e0b; font-size: 0.9rem;">🔢 LOWEST & THIRD LOWEST NUMBER MATH</label>
-            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: bold;">Lowest + Third Lowest Pocket</span>
+            <label style="color: #f59e0b; font-size: 0.9rem;">🔢 LOWEST & THIRD UNIQUE LOWEST NUMBER MATH</label>
+            <span style="font-size: 0.75rem; color: var(--accent-gold); font-weight: bold;">1st + 3rd Unique Pocket = Answer</span>
         </div>
         <div class="grid-3" style="margin-top: 10px;">
             <div class="stat-box" style="border-color: #f87171; background: rgba(239, 68, 68, 0.08);">
-                <label style="color: #f87171;">LOWEST NUMBER</label>
+                <label style="color: #f87171;">1ST UNIQUE LOWEST</label>
                 <div id="lowestNumVal" class="stat-val" style="font-size: 1.8rem; color: #f87171;">--</div>
                 <div id="lowestNumColor" class="stat-sub"></div>
             </div>
             <div class="stat-box" style="border-color: #60a5fa; background: rgba(59, 130, 246, 0.08);">
-                <label style="color: #60a5fa;">THIRD LOWEST NUMBER</label>
+                <label style="color: #60a5fa;">3RD UNIQUE LOWEST</label>
                 <div id="thirdLowestNumVal" class="stat-val" style="font-size: 1.8rem; color: #60a5fa;">--</div>
                 <div id="thirdLowestNumColor" class="stat-sub"></div>
             </div>
             <div class="stat-box" style="border-color: #f59e0b; background: rgba(245, 158, 11, 0.08);">
-                <label style="color: #f59e0b;">SELECTED NUMBER (LOWEST OR THIRD)</label>
-                <div id="selectedMathNumVal" class="stat-val" style="font-size: 1.8rem; color: #f59e0b;">--</div>
-                <div id="selectedMathColorVal" class="stat-sub"></div>
+                <label style="color: #f59e0b;">COMBINED ANSWER (1ST + 3RD)</label>
+                <div id="combinedAnswerVal" class="stat-val" style="font-size: 2rem; color: #f59e0b;">--</div>
+                <div id="combinedAnswerColor" class="stat-sub"></div>
             </div>
         </div>
         <div style="background: #080b10; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 10px; font-size: 0.75rem; color: var(--text-muted);">
             <div style="margin-bottom: 4px;"><b>Forecast Numbers:</b> <span id="forecastNumbersList" style="color: #38bdf8; font-family: monospace;">--</span></div>
-            <div><b>Logic:</b> Sort all forecast pockets ascending. Pick the 1st (lowest) and 3rd lowest. If duplicates exist (e.g. 1, 9, 9, 18, 32), the value 9 is used for both lowest and third lowest. The selected number shows its color on the board.</div>
+            <div><b>Logic:</b> Sort all forecast pockets ascending, remove duplicates, pick 1st unique lowest and 3rd unique lowest, then ADD them. Example: 1, 9, 9, 18, 32 → unique = [1, 9, 18, 32] → 1st = 1, 3rd = 18 → 1 + 18 = 19. Each shows its color on the board.</div>
         </div>
     </div>
 
@@ -358,15 +326,12 @@
                         <th>Dozen / Column</th>
                     </tr>
                 </thead>
-                <tbody id="forecastTable">
-                    <!-- Dynamically populated -->
-                </tbody>
+                <tbody id="forecastTable"></tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- Modal Container for Verification Code -->
 <div id="consoleModal" class="modal">
     <div class="modal-content">
         <label>BetPanda.io Casino Verification Snippet (JavaScript)</label>
@@ -382,10 +347,6 @@
 // ============================================================================
 // Provably Fair Roulette AI Predictor Engine (Universal / Multi-Casino)
 // ============================================================================
-// Deterministic HMAC-SHA256 derivation engine supporting multiple casino
-// algorithms and configurable output mappings. Designed to be dropped into any
-// provably-fair crypto casino that exposes serverSeed + clientSeed + nonce.
-
 class RouletteAIEngine {
     constructor({ wheelVariant = 'european' } = {}) {
         this.wheelVariant = wheelVariant;
@@ -395,7 +356,6 @@ class RouletteAIEngine {
             : [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
         this.redNumbers = new Set([1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]);
     }
-
     setWheelVariant(variant) {
         this.wheelVariant = variant;
         this.pocketCount = variant === 'american' ? 38 : 37;
@@ -403,111 +363,65 @@ class RouletteAIEngine {
             ? [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1, "00", 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2]
             : [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
     }
-
-    /** Build the message string for the given casino algorithm mode. */
     buildMessage(serverSeed, clientSeed, nonce, casinoMode) {
         switch (casinoMode) {
-            case 'betpanda':
-                return `${clientSeed}:${nonce}`;
-            case 'betpanda-alt':
-                return `${clientSeed}:${nonce}:${serverSeed}`;
-            case 'betfury':
-                return `${serverSeed}:${clientSeed}:${nonce}`;
-            case 'roobet':
-                return `${clientSeed}:${nonce}:0`;
-            case 'bustabit':
-                return `${clientSeed}:${nonce}:${serverSeed}`;
+            case 'betpanda': return `${clientSeed}:${nonce}`;
+            case 'betpanda-alt': return `${clientSeed}:${nonce}:${serverSeed}`;
+            case 'betfury': return `${serverSeed}:${clientSeed}:${nonce}`;
+            case 'roobet': return `${clientSeed}:${nonce}:0`;
+            case 'bustabit': return `${clientSeed}:${nonce}:${serverSeed}`;
             case 'stake':
-            default:
-                return `${clientSeed}:${nonce}`;
+            default: return `${clientSeed}:${nonce}`;
         }
     }
-
-    /** Derive a single roulette roll from seeds + nonce using HMAC-SHA256. */
     async deriveRoll(serverSeed, clientSeed, nonce, casinoMode = 'betpanda') {
         const enc = new TextEncoder();
         const keyData = enc.encode(serverSeed || 'default_server_seed');
         const msgStr = this.buildMessage(serverSeed, clientSeed, nonce, casinoMode);
         const msgData = enc.encode(msgStr);
-
-        const cryptoKey = await crypto.subtle.importKey(
-            'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-        );
+        const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
         const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
         const buf = new Uint8Array(sig);
-
-        // Use bytes 0-3 as big-endian u32 for maximum precision.
         const view = new DataView(buf.buffer, buf.byteOffset, 4);
         const u32 = view.getUint32(0, false);
-
         const rawVal = u32 % this.pocketCount;
         let pocket = rawVal;
         if (this.wheelVariant === 'american' && rawVal === 37) pocket = '00';
-
         let color = 'BLACK';
         if (pocket === 0 || pocket === '00') color = 'GREEN';
         else if (this.redNumbers.has(Number(pocket))) color = 'RED';
-
         const isEven = typeof pocket === 'number' && pocket !== 0 && pocket % 2 === 0;
         const isHigh = typeof pocket === 'number' && pocket >= 19;
-
         let dozen = '1st Dozen';
         if (typeof pocket === 'number' && pocket >= 13 && pocket <= 24) dozen = '2nd Dozen';
         else if (typeof pocket === 'number' && pocket >= 25) dozen = '3rd Dozen';
         if (pocket === 0 || pocket === '00') dozen = 'Zero Sector';
-
         let column = '1st Col';
         if (typeof pocket === 'number' && pocket > 0) {
             if (pocket % 3 === 2) column = '2nd Col';
             else if (pocket % 3 === 0) column = '3rd Col';
         }
-
         const wheelPosition = this.wheelOrder.indexOf(pocket);
         const sectorIndex = Math.floor((wheelPosition / this.wheelOrder.length) * 12);
-
         return {
-            nonce,
-            pocket,
-            color,
-            rawVal,
-            u32,
-            wheelPosition,
-            sectorIndex,
+            nonce, pocket, color, rawVal, u32, wheelPosition, sectorIndex,
             fullHex: Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join(''),
             hexChunk: Array.from(buf.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join(''),
-            hmacSig: buf,
-            isEven,
-            isHigh,
-            dozen,
-            column,
-            casinoMode,
-            wheelVariant: this.wheelVariant
+            hmacSig: buf, isEven, isHigh, dozen, column, casinoMode, wheelVariant: this.wheelVariant
         };
     }
-
-    /** Derive a consecutive block of rolls starting at nonce `start`. */
     async deriveSequence(serverSeed, clientSeed, start, count, casinoMode = 'betpanda') {
         const results = [];
-        for (let i = 0; i < count; i++) {
-            results.push(await this.deriveRoll(serverSeed, clientSeed, start + i, casinoMode));
-        }
+        for (let i = 0; i < count; i++) results.push(await this.deriveRoll(serverSeed, clientSeed, start + i, casinoMode));
         return results;
     }
-
-    /** Color probability distribution across a forecast window. */
     colorDistribution(rolls) {
         const total = rolls.length;
         if (!total) return { RED: 0, BLACK: 0, GREEN: 0 };
         const counts = { RED: 0, BLACK: 0, GREEN: 0 };
         rolls.forEach(r => counts[r.color] = (counts[r.color] || 0) + 1);
-        return {
-            RED: ((counts.RED / total) * 100).toFixed(2),
-            BLACK: ((counts.BLACK / total) * 100).toFixed(2),
-            GREEN: ((counts.GREEN / total) * 100).toFixed(2)
-        };
+        return { RED: ((counts.RED / total) * 100).toFixed(2), BLACK: ((counts.BLACK / total) * 100).toFixed(2), GREEN: ((counts.GREEN / total) * 100).toFixed(2) };
     }
-
-    /** Pocket frequency heatmap across a forecast window. */
     pocketHeatmap(rolls) {
         const map = {};
         rolls.forEach(r => { map[r.pocket] = (map[r.pocket] || 0) + 1; });
@@ -515,101 +429,61 @@ class RouletteAIEngine {
     }
 }
 
-// ============================================================================
-// Markov / Pattern Adaptive Engine
-// ============================================================================
 class MarkovPatternEngine {
     constructor() {
-        this.transitions = {
-            RED: { RED: 1, BLACK: 1 },
-            BLACK: { RED: 1, BLACK: 1 }
-        };
+        this.transitions = { RED: { RED: 1, BLACK: 1 }, BLACK: { RED: 1, BLACK: 1 } };
         this.history = [];
     }
-
     record(color) {
         if (color !== 'RED' && color !== 'BLACK') return;
         if (this.history.length > 0) {
             const last = this.history[this.history.length - 1];
-            if (this.transitions[last] && this.transitions[last][color] !== undefined) {
-                this.transitions[last][color]++;
-            }
+            if (this.transitions[last] && this.transitions[last][color] !== undefined) this.transitions[last][color]++;
         }
         this.history.push(color);
     }
-
     streakLength() {
         if (!this.history.length) return 0;
         const last = this.history[this.history.length - 1];
         let n = 0;
-        for (let i = this.history.length - 1; i >= 0; i--) {
-            if (this.history[i] === last) n++;
-            else break;
-        }
+        for (let i = this.history.length - 1; i >= 0; i--) { if (this.history[i] === last) n++; else break; }
         return n;
     }
-
     fatigue() {
         const streak = this.streakLength();
         if (streak <= 1) return 0;
         return Math.min(95, Math.pow(1.5, streak - 1) * 20);
     }
-
     evaluate() {
-        if (!this.history.length) return {
-            suggestedColor: null,
-            redRatio: 50,
-            blackRatio: 50,
-            fatigue: 0,
-            streak: 0,
-            mode: 'NEUTRAL'
-        };
-
+        if (!this.history.length) return { suggestedColor: null, redRatio: 50, blackRatio: 50, fatigue: 0, streak: 0, mode: 'NEUTRAL' };
         const last = this.history[this.history.length - 1];
         const streak = this.streakLength();
         const fatigue = this.fatigue();
-
         const total = (this.transitions[last].RED || 0) + (this.transitions[last].BLACK || 0) + 1;
         let redRatio = Math.round(((this.transitions[last].RED || 1) / total) * 100);
         let blackRatio = Math.round(((this.transitions[last].BLACK || 1) / total) * 100);
-
         let suggestedColor = last;
         let mode = 'CONTINUATION';
-
         if (fatigue > 55) {
             suggestedColor = last === 'RED' ? 'BLACK' : 'RED';
             mode = 'REVERSAL';
-            if (last === 'RED') {
-                blackRatio = Math.min(90, blackRatio + Math.round(fatigue * 0.4));
-                redRatio = 100 - blackRatio;
-            } else {
-                redRatio = Math.min(90, redRatio + Math.round(fatigue * 0.4));
-                blackRatio = 100 - redRatio;
-            }
+            if (last === 'RED') { blackRatio = Math.min(90, blackRatio + Math.round(fatigue * 0.4)); redRatio = 100 - blackRatio; }
+            else { redRatio = Math.min(90, redRatio + Math.round(fatigue * 0.4)); blackRatio = 100 - redRatio; }
         }
-
         return { suggestedColor, redRatio, blackRatio, fatigue, streak, mode, last };
     }
-
     clear() {
         this.history = [];
-        this.transitions = {
-            RED: { RED: 1, BLACK: 1 },
-            BLACK: { RED: 1, BLACK: 1 }
-        };
+        this.transitions = { RED: { RED: 1, BLACK: 1 }, BLACK: { RED: 1, BLACK: 1 } };
     }
 }
 
-// ============================================================================
-// Page Integration (single-file UI glue)
-// ============================================================================
 const RED_NUMBERS = new Set([1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]);
 const EUROPEAN_WHEEL = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
 const AMERICAN_WHEEL = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 1, "00", 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2];
 
 const aiEngine = new RouletteAIEngine({ wheelVariant: 'european' });
 const markovEngine = new MarkovPatternEngine();
-
 let isSpinning = false;
 let activeTargetPocket = 0;
 let autoAdvanceTimer = null;
@@ -627,25 +501,20 @@ async function runPredictor() {
     const casinoMode = document.getElementById('casinoMode').value;
     const wheelVariant = document.getElementById('wheelVariant').value;
     const forecastCount = Math.min(250, Math.max(1, parseInt(document.getElementById('forecastCount').value) || 50));
-
     try {
         document.getElementById('targetNonceLabel').innerText = nonce;
         document.getElementById('nextNonceNum').innerText = nonce + 1;
         document.getElementById('nextNonceSubLabel').innerText = nonce + 1;
         document.getElementById('nextHighlightNonce').innerText = nonce + 1;
-
         const currentRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
         activeTargetPocket = currentRoll.pocket;
-
         const nextRoll = await deriveRouletteRoll(serverSeed, clientSeed, nonce + 1, casinoMode, wheelVariant);
         updateNextSpinCard(nextRoll);
-
         const nextPocketElem = document.getElementById('nextHighlightPocket');
         const nextSubElem = document.getElementById('nextHighlightSub');
         const pocketColor = nextRoll.color === 'RED' ? '#f87171' : (nextRoll.color === 'BLACK' ? '#60a5fa' : '#34d399');
         nextPocketElem.innerHTML = `<span style="color: ${pocketColor}">POCKET #${nextRoll.pocket} (${nextRoll.color})</span>`;
         nextSubElem.innerText = `Sector: ${nextRoll.dozen} | ${nextRoll.column} | ${nextRoll.pocket === 0 || nextRoll.pocket === "00" ? "Zero" : (nextRoll.isEven ? "Even" : "Odd")}`;
-
         const forecastList = [];
         const hitCounts = {};
         for (let i = 0; i < forecastCount; i++) {
@@ -653,7 +522,6 @@ async function runPredictor() {
             forecastList.push(roll);
             hitCounts[roll.pocket] = (hitCounts[roll.pocket] || 0) + 1;
         }
-
         updatePureColorSignal(currentRoll, forecastList);
         updateTargetBadge(currentRoll);
         drawWheel(currentRoll.pocket);
@@ -662,16 +530,13 @@ async function runPredictor() {
         updateForwardWave(forecastList.slice(0, 5));
         updateLowThirdLowestMath(forecastList);
         updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant);
-    } catch (err) {
-        console.error("Predictor Error:", err);
-    }
+    } catch (err) { console.error("Predictor Error:", err); }
 }
 
 function updateNextSpinCard(roll) {
     const colorVal = document.getElementById('nextSpinColorVal');
     colorVal.innerText = roll.color;
-    colorVal.style.color = roll.color === 'RED' ? '#f87171' : (roll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-
+    colorVal.style.color = roll.color === 'RED' ? '#f87171' : '#60a5fa';
     document.getElementById('nextSpinPocketVal').innerText = `#${roll.pocket}`;
     const parityText = roll.pocket === 0 || roll.pocket === "00" ? "Zero" : (roll.isEven ? "Even" : "Odd");
     document.getElementById('nextSpinDozenVal').innerText = `${roll.dozen} / ${parityText}`;
@@ -693,7 +558,6 @@ function updatePureColorSignal(currentRoll, forecastList) {
 
     const recBox = document.getElementById('colorBetRecommendation');
     recBox.innerText = `🎯 BET RECOMMENDATION: ${currentRoll.color} (POCKET #${currentRoll.pocket})`;
-
     const hmacBox = document.getElementById('rawHmacOutput');
     if (hmacBox) hmacBox.innerText = `HMAC-SHA256 (${currentRoll.casinoMode}): ${currentRoll.fullHex}`;
 }
@@ -702,7 +566,6 @@ function updateForwardWave(waveList) {
     const container = document.getElementById('forwardWaveGrid');
     if (!container) return;
     container.innerHTML = '';
-
     waveList.forEach((roll) => {
         const card = document.createElement('div');
         card.style.background = '#080b10';
@@ -710,13 +573,8 @@ function updateForwardWave(waveList) {
         card.style.borderRadius = '8px';
         card.style.padding = '10px';
         card.style.textAlign = 'center';
-
         const colorHex = roll.color === 'RED' ? '#f87171' : (roll.color === 'BLACK' ? '#60a5fa' : '#34d399');
-        card.innerHTML = `
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Nonce #${roll.nonce}</div>
-            <div style="font-size: 1.2rem; font-weight: bold; color: ${colorHex}; margin: 4px 0;">${roll.color}</div>
-            <div style="font-size: 0.85rem; color: #fff;">Pocket #${roll.pocket}</div>
-        `;
+        card.innerHTML = `<div style="font-size: 0.7rem; color: var(--text-muted);">Nonce #${roll.nonce}</div><div style="font-size: 1.2rem; font-weight: bold; color: ${colorHex}; margin: 4px 0;">${roll.color}</div><div style="font-size: 0.85rem; color: #fff;">Pocket #${roll.pocket}</div>`;
         container.appendChild(card);
     });
 }
@@ -725,16 +583,11 @@ function renderFeltGrid(hitCounts, wheelVariant) {
     const feltBoard = document.getElementById('feltBoard');
     if (!feltBoard) return;
     feltBoard.innerHTML = '';
-
-    const maxPocket = 36;
     for (let i = 1; i <= 36; i++) {
         const cell = document.createElement('div');
         cell.className = 'felt-cell';
-        
         let colorClass = 'bg-black';
-        if (i === 0) colorClass = 'bg-green';
-        else if (RED_NUMBERS.has(i)) colorClass = 'bg-red';
-
+        if (RED_NUMBERS.has(i)) colorClass = 'bg-red';
         const count = hitCounts[i] || 0;
         cell.classList.add(colorClass);
         cell.innerHTML = `${i} <span class="hit-count">${count > 0 ? count : ''}</span>`;
@@ -746,70 +599,14 @@ function renderTable(forecastList) {
     const tbody = document.getElementById('forecastTable');
     if (!tbody) return;
     tbody.innerHTML = '';
-
     forecastList.forEach(item => {
         const tr = document.createElement('tr');
         const colorStyle = item.color === 'RED' ? 'color: #f87171;' : (item.color === 'BLACK' ? 'color: #60a5fa;' : 'color: #34d399;');
         const parity = item.pocket === 0 || item.pocket === "00" ? "-" : (item.isEven ? "Even" : "Odd");
         const range = item.pocket === 0 || item.pocket === "00" ? "-" : (item.isHigh ? "19-36" : "1-18");
-
-        tr.innerHTML = `
-            <td>#${item.nonce}</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted);">${item.hexChunk}...</td>
-            <td style="font-size: 0.75rem; color: #38bdf8;">${item.u32}</td>
-            <td style="font-weight: bold;">#${item.pocket}</td>
-            <td><span style="${colorStyle} font-weight: bold;">${item.color}</span></td>
-            <td>${parity}</td>
-            <td>${range}</td>
-            <td style="font-size: 0.75rem; color: var(--text-muted);">${item.dozen} / ${item.column}</td>
-        `;
+        tr.innerHTML = `<td>#${item.nonce}</td><td style="font-size: 0.75rem; color: var(--text-muted);">${item.hexChunk}...</td><td style="font-size: 0.75rem; color: #38bdf8;">${item.u32}</td><td style="font-weight: bold;">#${item.pocket}</td><td><span style="${colorStyle} font-weight: bold;">${item.color}</span></td><td>${parity}</td><td>${range}</td><td style="font-size: 0.75rem; color: var(--text-muted);">${item.dozen} / ${item.column}</td>`;
         tbody.appendChild(tr);
     });
-}
-
-function updateLowThirdLowestMath(forecastList) {
-    // Get all pocket numbers as numeric values (treat "00" as 37 for sorting, 0 as 0)
-    const pockets = forecastList.map(r => {
-        if (r.pocket === "00") return 37;
-        return Number(r.pocket);
-    });
-
-    // Build unique sorted ascending values
-    const uniqueSorted = [...new Set(pockets)].sort((a, b) => a - b);
-
-    const lowest = uniqueSorted[0];
-    const secondUnique = uniqueSorted[1] !== undefined ? uniqueSorted[1] : lowest;
-
-    // Build display list
-    const listElem = document.getElementById('forecastNumbersList');
-    if (listElem) listElem.innerText = forecastList.map(r => r.pocket).join(', ');
-
-    // Helper to get color for a pocket value
-    const getColorForPocket = (val) => {
-        if (val === 0 || val === 37) return { color: 'GREEN', hex: '#34d399' };
-        return RED_NUMBERS.has(val) ? { color: 'RED', hex: '#f87171' } : { color: 'BLACK', hex: '#60a5fa' };
-    };
-
-    const lowestColor = getColorForPocket(lowest);
-    const secondColor = getColorForPocket(secondUnique);
-
-    // Display lowest
-    document.getElementById('lowestNumVal').innerText = lowest === 37 ? '00' : lowest;
-    document.getElementById('lowestNumVal').style.color = lowestColor.hex;
-    document.getElementById('lowestNumColor').innerText = lowestColor.color;
-
-    // Display second unique lowest
-    document.getElementById('thirdLowestNumVal').innerText = secondUnique === 37 ? '00' : secondUnique;
-    document.getElementById('thirdLowestNumVal').style.color = secondColor.hex;
-    document.getElementById('thirdLowestNumColor').innerText = secondColor.color;
-
-    // Selected number: prefer lowest, fallback to second unique
-    const selected = lowest;
-    const selectedColor = getColorForPocket(selected);
-
-    document.getElementById('selectedMathNumVal').innerText = selected === 37 ? '00' : selected;
-    document.getElementById('selectedMathNumVal').style.color = selectedColor.hex;
-    document.getElementById('selectedMathColorVal').innerText = selectedColor.color;
 }
 
 function updateTargetBadge(roll) {
@@ -825,37 +622,29 @@ function updateTargetBadge(roll) {
 function drawWheel(targetPocket) {
     const canvas = document.getElementById('wheelCanvas');
     if (!canvas || typeof canvas.getContext !== 'function') return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     const radius = Math.min(cx, cy) - 10;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.save();
     ctx.translate(cx, cy);
-
     const slices = EUROPEAN_WHEEL.length;
     const sliceAngle = (2 * Math.PI) / slices;
-
     EUROPEAN_WHEEL.forEach((p, i) => {
         const angle = i * sliceAngle;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.arc(0, 0, radius, angle, angle + sliceAngle);
         ctx.closePath();
-
         if (p === 0) ctx.fillStyle = '#059669';
         else if (RED_NUMBERS.has(p)) ctx.fillStyle = '#dc2626';
         else ctx.fillStyle = '#1e293b';
-
         ctx.fill();
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#0f172a';
         ctx.stroke();
-
         ctx.save();
         ctx.rotate(angle + sliceAngle / 2);
         ctx.fillStyle = '#ffffff';
@@ -864,7 +653,6 @@ function drawWheel(targetPocket) {
         ctx.fillText(p.toString(), radius - 8, 3);
         ctx.restore();
     });
-
     ctx.restore();
 }
 
@@ -891,9 +679,7 @@ function adjustNonce(delta) {
     runPredictor();
 }
 
-function advanceToNextSpin() {
-    adjustNonce(1);
-}
+function advanceToNextSpin() { adjustNonce(1); }
 
 function toggleAutoAdvance() {
     const btn = document.getElementById('autoAdvanceBtn');
@@ -906,88 +692,46 @@ function toggleAutoAdvance() {
         const speed = parseInt(document.getElementById('autoSpeed').value) || 500;
         btn.innerText = '⏸ Pause';
         btn.style.background = '#ef4444';
-        autoAdvanceTimer = setInterval(() => {
-            adjustNonce(1);
-        }, speed);
+        autoAdvanceTimer = setInterval(() => { adjustNonce(1); }, speed);
     }
 }
 
 async function recordLiveColor(color) {
-    // Update Markov model with previous landed color transition
     markovEngine.record(color);
-
     liveRecordedColors.push(color);
     document.getElementById('recordedSeqDisplay').innerText = liveRecordedColors.join(', ');
     document.getElementById('recentHistoryInput').value = liveRecordedColors.join(', ');
-
-    // Advance nonce by 1
     const nonceInput = document.getElementById('nonce');
     const currentNonce = parseInt(nonceInput.value) || 0;
     const nextNonce = currentNonce + 1;
     nonceInput.value = nextNonce;
-
     const statusElem = document.getElementById('syncLockStatus');
-    if (statusElem) {
-        statusElem.innerText = `RECALIBRATED FOR NEXT SPIN (#${nextNonce})`;
-        statusElem.style.color = "#10b981";
-    }
-
-    // Run dynamic predictor with adaptive sequence pattern weighting
+    if (statusElem) { statusElem.innerText = `RECALIBRATED FOR NEXT SPIN (#${nextNonce})`; statusElem.style.color = "#10b981"; }
     runPredictorWithPattern();
 }
 
-async function runPredictorWithPattern() {
-    await runPredictor();
-    evaluateMarkovPatternAndAdjust();
-}
+async function runPredictorWithPattern() { await runPredictor(); evaluateMarkovPatternAndAdjust(); }
 
 function evaluateMarkovPatternAndAdjust() {
     const evalResult = markovEngine.evaluate();
     if (!evalResult) return;
-
     const lastColor = evalResult.last;
     const streakCount = evalResult.streak;
     const fatigue = evalResult.fatigue;
-
     document.getElementById('streakFatigueVal').innerText = `${fatigue.toFixed(1)}%`;
-
     const redRatio = evalResult.redRatio;
     const blackRatio = evalResult.blackRatio;
-
-    // If fatigue exceeds threshold, tilt weights towards reversal color
     let suggestedColor = evalResult.suggestedColor;
-
     document.getElementById('adaptiveWeightVal').innerText = `${redRatio}% R / ${blackRatio}% B`;
-
     const label = document.getElementById('markovPredictionLabel');
     const subText = document.getElementById('markovSubText');
-
-    if (fatigue > 55) {
-        suggestedColor = lastColor === 'RED' ? 'BLACK' : 'RED';
-        if (lastColor === 'RED') {
-            blackRatio = Math.min(90, blackRatio + Math.round(fatigue * 0.4));
-            redRatio = 100 - blackRatio;
-        } else {
-            redRatio = Math.min(90, redRatio + Math.round(fatigue * 0.4));
-            blackRatio = 100 - redRatio;
-        }
-    }
-
-    document.getElementById('adaptiveWeightVal').innerText = `${redRatio}% R / ${blackRatio}% B`;
-
-    const label = document.getElementById('markovPredictionLabel');
-    const subText = document.getElementById('markovSubText');
-
     if (fatigue > 55) {
         label.innerText = `REVERSAL ALIGNED: ${suggestedColor}`;
         label.style.color = '#f59e0b';
         subText.innerText = `Streak of ${streakCount} ${lastColor} triggers fatigue adjustment toward ${suggestedColor}`;
-
-        // Dynamically overwrite next spin indicator to reflect adaptive pattern prediction
         const nextColorElem = document.getElementById('nextSpinColorVal');
         nextColorElem.innerText = suggestedColor;
         nextColorElem.style.color = suggestedColor === 'RED' ? '#f87171' : '#60a5fa';
-
         const nextHighlightElem = document.getElementById('nextHighlightPocket');
         const currentColorText = nextHighlightElem.innerText;
         nextHighlightElem.innerHTML = `<span style="color: ${suggestedColor === 'RED' ? '#f87171' : '#60a5fa'}">${currentColorText} [AI TILT: ${suggestedColor}]</span>`;
@@ -1015,16 +759,36 @@ function advanceNonceByOneOnce() {
     const nonceInput = document.getElementById('nonce');
     const currentNonce = parseInt(nonceInput.value) || 0;
     const nextNonce = currentNonce + 1;
-    
     nonceInput.value = nextNonce;
-
     const statusElem = document.getElementById('syncLockStatus');
-    if (statusElem) {
-        statusElem.innerText = `ADVANCED TO NEXT SPIN (#${nextNonce})`;
-        statusElem.style.color = "#10b981";
-    }
-    
+    if (statusElem) { statusElem.innerText = `ADVANCED TO NEXT SPIN (#${nextNonce})`; statusElem.style.color = "#10b981"; }
     runPredictorWithPattern();
+}
+
+function updateLowThirdLowestMath(forecastList) {
+    const pockets = forecastList.map(r => { if (r.pocket === "00") return 37; return Number(r.pocket); });
+    const uniqueSorted = [...new Set(pockets)].sort((a, b) => a - b);
+    const firstUnique = uniqueSorted[0];
+    const thirdUnique = uniqueSorted[2] !== undefined ? uniqueSorted[2] : firstUnique;
+    const listElem = document.getElementById('forecastNumbersList');
+    if (listElem) listElem.innerText = forecastList.map(r => r.pocket).join(', ');
+    const getColorForPocket = (val) => {
+        if (val === 0 || val === 37) return { color: 'GREEN', hex: '#34d399' };
+        return RED_NUMBERS.has(val) ? { color: 'RED', hex: '#f87171' } : { color: 'BLACK', hex: '#60a5fa' };
+    };
+    const firstColor = getColorForPocket(firstUnique);
+    const thirdColor = getColorForPocket(thirdUnique);
+    const combinedSum = firstUnique + thirdUnique;
+    const combinedColor = getColorForPocket(combinedSum <= 36 ? combinedSum : (combinedSum % 37));
+    document.getElementById('lowestNumVal').innerText = firstUnique === 37 ? '00' : firstUnique;
+    document.getElementById('lowestNumVal').style.color = firstColor.hex;
+    document.getElementById('lowestNumColor').innerText = firstColor.color;
+    document.getElementById('thirdLowestNumVal').innerText = thirdUnique === 37 ? '00' : thirdUnique;
+    document.getElementById('thirdLowestNumVal').style.color = thirdColor.hex;
+    document.getElementById('thirdLowestNumColor').innerText = thirdColor.color;
+    document.getElementById('combinedAnswerVal').innerText = combinedSum;
+    document.getElementById('combinedAnswerVal').style.color = combinedColor.hex;
+    document.getElementById('combinedAnswerColor').innerText = combinedColor.color;
 }
 
 function updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant) {
@@ -1035,12 +799,10 @@ async function verifyRoulette() {
     const nonce = ${nonce};
     const casinoMode = "${casinoMode}";
     const wheelVariant = "${wheelVariant}";
-
     const enc = new TextEncoder();
     let msgStr = \`\${clientSeed}:\${nonce}\`;
     if (casinoMode === "betpanda-alt") msgStr = \`\${clientSeed}:\${nonce}:\${serverSeed}\`;
     else if (casinoMode === "betfury") msgStr = \`\${serverSeed}:\${clientSeed}:\${nonce}\`;
-
     const keyData = enc.encode(serverSeed);
     const cryptoKey = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
     const sig = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(msgStr));
@@ -1048,7 +810,6 @@ async function verifyRoulette() {
     const u32 = view.getUint32(0, false);
     const pocketCount = wheelVariant === "american" ? 38 : 37;
     const rawVal = u32 % pocketCount;
-
     console.log("Nonce #" + nonce + " | Derived Pocket Index:", rawVal);
 }
 verifyRoulette();`;
@@ -1057,17 +818,12 @@ verifyRoulette();`;
 
 function toggleConsoleModal() {
     const modal = document.getElementById('consoleModal');
-    if (modal) {
-        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-    }
+    if (modal) modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
 }
 
 function copyConsoleSnippet() {
     const textarea = document.getElementById('consoleSnippet');
-    if (textarea) {
-        textarea.select();
-        document.execCommand('copy');
-    }
+    if (textarea) { textarea.select(); document.execCommand('copy'); }
 }
 
 function copyEngineScript() {
@@ -1076,10 +832,7 @@ function copyEngineScript() {
     const fullText = document.documentElement.outerHTML;
     const startIdx = fullText.indexOf(engineStart);
     const endIdx = fullText.indexOf(engineEnd);
-    if (startIdx === -1 || endIdx === -1) {
-        alert('Engine block not found.');
-        return;
-    }
+    if (startIdx === -1 || endIdx === -1) { alert('Engine block not found.'); return; }
     const engineBlock = fullText.slice(startIdx, endIdx + engineEnd.length);
     const blob = new Blob([engineBlock], { type: 'application/javascript' });
     const url = URL.createObjectURL(blob);
@@ -1093,20 +846,13 @@ function copyEngineScript() {
     alert('Roulette AI Engine saved as roulette-ai-engine.js');
 }
 
-// Keyboard Hotkey Listeners
 document.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-    if (e.key === 'ArrowLeft') {
-        adjustNonce(-1);
-    } else if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault();
-        advanceNonceByOneOnce();
-    }
+    if (e.key === 'ArrowLeft') adjustNonce(-1);
+    else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advanceNonceByOneOnce(); }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    runPredictor();
-});
+document.addEventListener('DOMContentLoaded', () => { runPredictor(); });
 </script>
 </body>
 </html>
