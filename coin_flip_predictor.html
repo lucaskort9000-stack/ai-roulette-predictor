@@ -215,24 +215,28 @@ async function deriveCoinFlip(serverSeed, clientSeed, nonce, casinoMode) {
   const u32 = view.getUint32(0, false);
   const bit0 = (buf[0] >> 7) & 1;
 
+  // XOR-fold first 8 bytes into a single byte for a stronger single-bit outcome
+  let folded = 0;
+  for (let b = 0; b < 8; b++) folded ^= buf[b];
+  const foldedBit = (folded >> 7) & 1;
+
   // Count set bits across first 4 bytes as an entropy / bias signal
   let setBits = 0;
   for (let b = 0; b < 4; b++) setBits += countBits(buf[b]);
   const bitDensity = setBits / 32; // 0.0 to 1.0
 
-  // Heads if bit0=1 AND density is balanced; if density is skewed toward 1s, lean heads; toward 0s, lean tails
-  let headsBias = bit0 === 1 ? 1 : -1;
-  if (bitDensity > 0.55) headsBias += 0.5;   // more 1s -> lean heads
-  else if (bitDensity < 0.45) headsBias -= 0.5; // more 0s -> lean tails
+  // Combine bit0 with folded bit for the final decision
+  let headsBias = (bit0 === 1 ? 1 : -1) + (foldedBit === 1 ? 1 : -1);
+  if (bitDensity > 0.55) headsBias += 0.5;
+  else if (bitDensity < 0.45) headsBias -= 0.5;
 
   const result = headsBias >= 0 ? 'HEADS' : 'TAILS';
+  const deviation = Math.abs(bitDensity - 0.5) * 2;
+  const confidence = Math.round(Math.min(99, 50 + deviation * 35 + Math.abs(headsBias) * 8));
 
-  // Confidence = how far from neutral (0.5) the density is, capped
-  const deviation = Math.abs(bitDensity - 0.5) * 2; // 0 to 1
-  const confidence = Math.round(Math.min(99, 50 + deviation * 40 + (Math.abs(headsBias) === 1.5 ? 10 : 0)));
 
   return {
-    nonce, result, bit0,
+    nonce, result, bit0, foldedBit,
     bitDensity,
     confidence,
     headsBias,
@@ -292,7 +296,7 @@ function renderCoinHistory() {
     const tr = document.createElement('tr');
     const colorStyle = item.result === 'HEADS' ? 'color: #f87171; font-weight: bold;' : 'color: #38bdf8; font-weight: bold;';
     const densityPct = (item.bitDensity * 100).toFixed(0);
-    tr.innerHTML = `<td style="font-size: 0.66rem; color: #94a3b8;">#${item.nonce}</td><td style="${colorStyle}">${item.result}</td><td style="font-size: 0.68rem; color: #94a3b8;">${item.bit0}</td><td style="font-size: 0.62rem; color: #64748b;">${item.bits}</td><td style="font-size: 0.66rem; color: #94a3b8;">${densityPct}%</td><td style="font-size: 0.66rem; color: #38bdf8; font-weight: bold;">${item.confidence}%</td>`;
+    tr.innerHTML = `<td style="font-size: 0.66rem; color: #94a3b8;">#${item.nonce}</td><td style="${colorStyle}">${item.result}</td><td style="font-size: 0.68rem; color: #94a3b8;">${item.bit0}|${item.foldedBit}</td><td style="font-size: 0.62rem; color: #64748b;">${item.bits}</td><td style="font-size: 0.66rem; color: #94a3b8;">${densityPct}%</td><td style="font-size: 0.66rem; color: #38bdf8; font-weight: bold;">${item.confidence}%</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -316,7 +320,7 @@ function adjustCoinNonce(delta) {
 async function runStreak() {
   const serverSeed = document.getElementById('serverSeed').value || 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
   const clientSeed = document.getElementById('clientSeed').value || 'coin_client_master_entropy';
-  const nonce = parseInt(document.getElementById('nonce').value) || 0;
+  const startNonce = parseInt(document.getElementById('nonce').value) || 0;
   const casinoMode = document.getElementById('casinoMode').value;
   const count = parseInt(document.getElementById('streakCount').value) || 1;
 
@@ -324,8 +328,8 @@ async function runStreak() {
   streakResults = [];
 
   for (let i = 0; i < count; i++) {
-    const flip = await deriveCoinFlip(serverSeed, clientSeed, nonce, casinoMode);
-    streakResults.push({ nonce: nonce, result: flip.result, won: true, bit0: flip.bit0, hexChunk: flip.hexChunk, confidence: flip.confidence });
+    const flip = await deriveCoinFlip(serverSeed, clientSeed, startNonce + i, casinoMode);
+    streakResults.push({ nonce: startNonce + i, result: flip.result, won: true, bit0: flip.bit0, hexChunk: flip.hexChunk, confidence: flip.confidence });
     coinHistory.unshift(flip);
     if (coinHistory.length > 100) coinHistory.pop();
   }
@@ -334,7 +338,7 @@ async function runStreak() {
   updateStreakUI(count, streakResults, mult, false);
   renderCoinHistory();
 
-  document.getElementById('coinNonceLabel').innerText = nonce;
+  document.getElementById('coinNonceLabel').innerText = startNonce;
   runCoinFlipPredictor();
 }
 
