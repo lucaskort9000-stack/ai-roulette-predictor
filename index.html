@@ -769,28 +769,36 @@ function updateLowThirdLowestMath(forecastList) {
     const pockets = forecastList.map(r => { if (r.pocket === "00") return 37; return Number(r.pocket); });
     const uniqueSorted = [...new Set(pockets)].sort((a, b) => a - b);
     if (uniqueSorted.length === 0) return;
+
     const firstUnique = uniqueSorted[0];
-    const thirdUnique = uniqueSorted.length >= 3 ? uniqueSorted[2] : uniqueSorted[uniqueSorted.length - 1];
+    const thirdUnique = uniqueSorted.length >= 3 ? uniqueSorted[2] : (uniqueSorted.length >= 2 ? uniqueSorted[1] : firstUnique);
+    const combinedSum = firstUnique + thirdUnique;
+
     const listElem = document.getElementById('forecastNumbersList');
     if (listElem) listElem.innerText = forecastList.map(r => r.pocket).join(', ');
+
     const getColorForPocket = (val) => {
         if (val === 0 || val === 37) return { color: 'GREEN', hex: '#34d399' };
         return RED_NUMBERS.has(val) ? { color: 'RED', hex: '#f87171' } : { color: 'BLACK', hex: '#60a5fa' };
     };
+
     const firstColor = getColorForPocket(firstUnique);
     const thirdColor = getColorForPocket(thirdUnique);
-    const combinedSum = firstUnique + thirdUnique;
     const combinedColor = getColorForPocket(combinedSum <= 36 ? combinedSum : (combinedSum % 37));
+
     document.getElementById('lowestNumVal').innerText = firstUnique === 37 ? '00' : firstUnique;
     document.getElementById('lowestNumVal').style.color = firstColor.hex;
     document.getElementById('lowestNumColor').innerText = firstColor.color;
+
     document.getElementById('thirdLowestNumVal').innerText = thirdUnique === 37 ? '00' : thirdUnique;
     document.getElementById('thirdLowestNumVal').style.color = thirdColor.hex;
     document.getElementById('thirdLowestNumColor').innerText = thirdColor.color;
+
     document.getElementById('combinedAnswerVal').innerText = combinedSum;
     document.getElementById('combinedAnswerVal').style.color = combinedColor.hex;
     document.getElementById('combinedAnswerColor').innerText = combinedColor.color;
-    console.log('Lowest math update | forecast:', forecastList.length, 'unique:', uniqueSorted, '1st:', firstUnique, '3rd:', thirdUnique, 'sum:', combinedSum);
+
+    console.log('LOWEST MATH | forecast:', forecastList.length, 'unique:', uniqueSorted, '1st:', firstUnique, '3rd:', thirdUnique, 'SUM:', combinedSum);
 }
 
 function updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant) {
