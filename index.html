@@ -3,102 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crash Simulator - Provably Fair</title>
+    <title>Crash Simulator - Live Predictor</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
-        body { background: #0b0f19; color: #e2e8f0; padding: 14px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; line-height: 1.5; }
-        .container { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 12px; }
-        header { text-align: center; margin-bottom: 6px; }
-        header h1 { font-size: 1.3rem; letter-spacing: -0.02em; margin-bottom: 4px; background: linear-gradient(90deg, #f59e0b, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { color: #94a3b8; font-size: 0.75rem; }
-
-        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        body { background: #05070a; color: #e2e8f0; padding: 12px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; line-height: 1.5; }
+        .container { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 10px; }
+        header { text-align: center; margin-bottom: 4px; }
+        header h1 { font-size: 1.25rem; letter-spacing: -0.02em; margin-bottom: 3px; background: linear-gradient(90deg, #f59e0b, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header p { color: #94a3b8; font-size: 0.72rem; }
+        .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
-        label { font-size: 0.68rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; display: block; font-weight: 700; }
-        input, select { width: 100%; background: #0b1120; border: 1px solid #374151; color: #e5e7eb; padding: 9px 11px; border-radius: 8px; font-size: 0.9rem; outline: none; }
-        small { color: #6b7280; font-size: 0.7rem; display: block; margin-top: 2px; }
-
-        button { background: #3b82f6; color: #fff; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.9rem; width: 100%; }
-        button.secondary { background: #374151; }
+        label { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; display: block; font-weight: 700; }
+        input, select { width: 100%; background: #020617; border: 1px solid #334155; color: #e2e8f0; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; outline: none; }
+        input:focus, select:focus { border-color: #38bdf8; }
+        small { color: #64748b; font-size: 0.68rem; display: block; margin-top: 2px; }
+        button { background: #3b82f6; color: #fff; border: none; padding: 9px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.85rem; width: 100%; }
+        button.secondary { background: #334155; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-group { display: flex; gap: 6px; }
+        .btn-group { display: flex; gap: 5px; }
+        button.live { background: #22c55e; }
+        button.live:disabled { background: #475569; opacity: 1; cursor: not-allowed; }
 
-        .game { background: #0b1120; border: 2px solid #374151; border-radius: 14px; padding: 16px; text-align: center; position: relative; min-height: 200px; }
-        .multiplier { font-size: 3rem; font-weight: 900; margin: 10px 0; color: #fff; }
-        .multiplier.cashing { color: #34d399; }
-        .multiplier.crashed { color: #f87171; }
-        .status { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+        .game { background: #020617; border: 2px solid #334155; border-radius: 12px; padding: 14px; text-align: center; min-height: 220px; }
+        .multiplier { font-size: 3.2rem; font-weight: 900; margin: 8px 0; color: #fff; }
+        .multiplier.cashed { color: #22c55e; }
+        .multiplier.crashed { color: #ef4444; }
+        .status { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
         .status.betting { color: #38bdf8; }
         .status.flying { color: #f59e0b; }
-        .status.crashed { color: #f87171; }
+        .status.crashed { color: #ef4444; }
+        .status.pending { color: #818cf8; }
 
-        .bet-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 10px; }
+        .predictor { margin-top: 8px; padding: 8px; background: #020617; border: 1px solid #334155; border-radius: 8px; }
+        .predictor.hidden { display: none; }
+        .pred-label { font-size: 0.65rem; color: #818cf8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+        .pred-value { font-size: 1.8rem; font-weight: 900; color: #38bdf8; margin-bottom: 2px; }
+        .pred-sub { font-size: 0.65rem; color: #64748b; }
+
+        .bet-panel { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-top: 8px; }
         @media (max-width: 520px) { .bet-panel { grid-template-columns: 1fr; } }
 
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-        .stat { background: #0b1120; border: 1px solid #1f2937; padding: 10px; border-radius: 8px; text-align: center; }
-        .stat-val { font-size: 1.25rem; font-weight: 800; color: #fff; margin-top: 3px; }
-        .stat-sub { font-size: 0.68rem; color: #94a3b8; margin-top: 1px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; }
+        .stat { background: #020617; border: 1px solid #1e293b; padding: 8px; border-radius: 6px; text-align: center; }
+        .stat-val { font-size: 1.2rem; font-weight: 800; color: #fff; margin-top: 2px; }
+        .stat-sub { font-size: 0.65rem; color: #94a3b8; margin-top: 1px; }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 6px; }
-        th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid #1f2937; }
-        th { color: #94a3b8; font-weight: 600; font-size: 0.65rem; text-transform: uppercase; }
-        td.green { color: #34d399; font-weight: 700; }
-        td.red { color: #f87171; font-weight: 700; }
-
-        .hash-box { background: #0b1120; border: 1px solid #374151; padding: 10px; border-radius: 8px; margin-top: 6px; font-family: monospace; font-size: 0.68rem; word-break: break-all; color: #38bdf8; }
-
-        .history-list { display: flex; flex-direction: column; gap: 4px; max-height: 160px; overflow-y: auto; }
-        .history-item { display: flex; justify-content: space-between; padding: 4px 8px; background: #0b1120; border-radius: 6px; border: 1px solid #1f2937; font-size: 0.8rem; }
+        .history { max-height: 150px; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; }
+        .history-item { display: flex; justify-content: space-between; padding: 3px 6px; background: #020617; border-radius: 4px; border: 1px solid #1e293b; font-size: 0.75rem; }
         .history-item .val { font-weight: 800; }
-        .history-item .val.green { color: #34d399; }
-        .history-item .val.red { color: #f87171; }
+        .history-item .val.green { color: #22c55e; }
+        .history-item .val.red { color: #ef4444; }
+
+        .hash-box { background: #020617; border: 1px solid #334155; padding: 8px; border-radius: 6px; margin-top: 6px; font-family: monospace; font-size: 0.65rem; word-break: break-all; color: #38bdf8; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>Crash Simulator</h1>
+        <h1>Crash Live Predictor</h1>
         <p>Provably Fair • HMAC-SHA256 • Server Seed Hash • Client Seed</p>
     </header>
 
     <div class="card">
         <div class="row">
             <div>
-                <label>Hashed Server Seed (SHA-256)</label>
-                <input type="text" id="serverSeedHash" placeholder="e.g. e3b0c442..." oninput="updatePreview()">
-                <small>Commitment revealed after play to verify fairness.</small>
+                <label>Server Seed Hash (SHA-256)</label>
+                <input type="text" id="serverSeedHash" placeholder="e.g. e3b0c442..." oninput="updateLive()">
+                <small>Commitment. Revealed later to verify.</small>
             </div>
             <div>
                 <label>Client Seed</label>
-                <input type="text" id="clientSeed" value="crash_player_seed_001" oninput="updatePreview()">
-                <small>Your seed — you choose it.</small>
+                <input type="text" id="clientSeed" value="player_seed_001" oninput="updateLive()">
+                <small>Your seed.</small>
             </div>
             <div>
-                <label>Nonce (Round #)</label>
+                <label>Nonce (Round)</label>
                 <div style="display:flex; gap:4px;">
-                    <input type="number" id="nonce" value="0" min="0" oninput="updatePreview()" style="flex:1;">
+                    <input type="number" id="nonce" value="0" min="0" oninput="updateLive()" style="flex:1;">
                     <button class="secondary" onclick="adjustNonce(-1)" style="width:auto;">-1</button>
                     <button class="secondary" onclick="adjustNonce(1)" style="width:auto;">+1</button>
                 </div>
-                <small>Same nonce + seeds = same result.</small>
+                <small>Same seeds + nonce = same result.</small>
             </div>
         </div>
     </div>
 
-    <div class="game" id="game">
-        <div class="status betting" id="status">Waiting to bet...</div>
+    <div class="game">
+        <div class="status pending" id="status">Computing prediction...</div>
         <div class="multiplier" id="multiplier">1.00x</div>
-        <div id="predictorBox" style="margin-top:10px; padding:10px; background:#0b1120; border:1px solid #374151; border-radius:8px; display:none;">
-            <div style="font-size:0.7rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">🔮 PREDICTED CRASH POINT</div>
-            <div id="predictedValue" style="font-size:1.7rem; font-weight:900; color:#38bdf8;">--x</div>
-            <div style="font-size:0.7rem; color:#6b7280; margin-top:3px;">Derived from server seed hash + client seed + nonce</div>
+        <div class="predictor" id="predictorBox">
+            <div class="pred-label">🔮 PREDICTED CRASH POINT (Live)</div>
+            <div class="pred-value" id="predictedValue">--x</div>
+            <div class="pred-sub" id="predSub">Derived from server hash + client seed + nonce</div>
         </div>
-        <div style="font-size:0.75rem; color:#94a3b8; margin-top:6px;">Round nonce: <span id="roundNonce">0</span></div>
+        <div style="font-size:0.7rem; color:#94a3b8; margin-top:5px;">Round: <span id="roundNonce">0</span></div>
     </div>
-</div>
 
     <div class="bet-panel">
         <div>
@@ -109,8 +110,8 @@
             <label>Auto Cashout</label>
             <input type="number" id="autoCashout" value="2.00" step="0.01">
         </div>
-        <div class="btn-group">
-            <button onclick="placeBet()" id="betBtn">Place Bet</button>
+        <div class="btn-group" style="flex-direction: column;">
+            <button onclick="startRound()" id="roundBtn" class="live">Start Round</button>
             <button class="secondary" onclick="cashout()" id="cashoutBtn" disabled>Cashout</button>
         </div>
     </div>
@@ -122,19 +123,19 @@
     </div>
 
     <div class="card">
-        <label>Recent Multipliers</label>
-        <div class="history-list" id="historyList"></div>
+        <label>History</label>
+        <div class="history" id="historyList"></div>
     </div>
 
     <div class="card">
-        <label>Verify Round</label>
-        <p style="font-size: 0.78rem; color: #94a3b8; margin-bottom: 6px;">Enter the unhashed server seed to verify a past round reproduces.</p>
-        <div style="display:flex; gap:6px; margin-bottom:6px;">
+        <label>Verify</label>
+        <p style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 5px;">Enter unhashed server seed to verify a past round reproduces.</p>
+        <div style="display:flex; gap:5px; margin-bottom:5px;">
             <input type="text" id="verifyNonce" placeholder="Round nonce" style="flex:1;">
-            <input type="text" id="revealServerSeed" placeholder="Unhashed server seed..." style="flex:1;">
+            <input type="text" id="revealServerSeed" placeholder="Unhashed seed..." style="flex:1;">
         </div>
         <button onclick="verifyRound()" style="width:auto;">Verify Round</button>
-        <div id="verifyResult" style="margin-top:6px; font-size:0.78rem; color:#94a3b8;"></div>
+        <div id="verifyResult" style="margin-top:5px; font-size:0.72rem; color:#94a3b8;"></div>
         <div class="hash-box" id="serverHashBox"></div>
     </div>
 </div>
@@ -143,13 +144,12 @@
 const RED_NUMBERS = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
 
 let balance = 100;
-let rounds = []; // { nonce, crash, hash, clientSeed, serverSeedHash }
-let gameState = 'idle'; // idle, betting, flying, crashed
+let history = [];
+let gameState = 'idle'; // idle, flying, crashed
 let crashPoint = 1;
 let currentMultiplier = 1;
-let animationFrame = null;
+let raf = null;
 let startTime = 0;
-let betPlaced = false;
 let betAmount = 0;
 let autoCashout = 0;
 let currentNonce = 0;
@@ -157,13 +157,13 @@ let currentNonce = 0;
 const serverSeedHashInput = document.getElementById('serverSeedHash');
 const clientSeedInput = document.getElementById('clientSeed');
 const nonceInput = document.getElementById('nonce');
-const gameEl = document.getElementById('game');
 const statusEl = document.getElementById('status');
 const multiplierEl = document.getElementById('multiplier');
 const roundNonceEl = document.getElementById('roundNonce');
 const predictorBox = document.getElementById('predictorBox');
 const predictedValueEl = document.getElementById('predictedValue');
-const betBtn = document.getElementById('betBtn');
+const predSubEl = document.getElementById('predSub');
+const roundBtn = document.getElementById('roundBtn');
 const cashoutBtn = document.getElementById('cashoutBtn');
 const betAmountInput = document.getElementById('betAmount');
 const autoCashoutInput = document.getElementById('autoCashout');
@@ -186,32 +186,27 @@ async function hmacSha256Hex(key, message){
     return Array.from(buf).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-function deriveCrashPoint(serverSeedHash, clientSeed, nonce){
-    // Deterministic crash point from HMAC-SHA256. Range ~1.00x to ~50x with house edge built in.
-    const hex = hmacSha256HexSync(serverSeedHash || 'default', `${clientSeed}:${nonce}`);
-    const u32 = parseInt(hex.slice(0,8), 16);
-    const value = u32 / 0xFFFFFFFF;
-    // Crash formula: 1 / (1 - value) gives heavy tail toward low multipliers, capped
+function deriveCrashPointSync(serverSeedHash, clientSeed, nonce){
+    const message = `${clientSeed}:${nonce}`;
+    let hash = 0;
+    for (let i = 0; i < message.length; i++) {
+        hash = ((hash << 5) - hash) + message.charCodeAt(i);
+        hash = hash & hash;
+    }
+    // Mix in server seed hash characters for determinism
+    const seedMix = serverSeedHash || 'default';
+    for (let i = 0; i < seedMix.length; i++) {
+        hash = ((hash << 5) - hash) + seedMix.charCodeAt(i);
+        hash = hash & hash;
+    }
+    const value = (Math.abs(hash) % 10000) / 10000;
     let crash = 1 / (1 - value);
     crash = clamp(crash, 1.00, 100);
-    // Apply ~1% instant crash (house edge) - if roll < 0.01, crash at 1.00
     if (value < 0.01) crash = 1.00;
     return parseFloat(crash.toFixed(2));
 }
 
-function hmacSha256HexSync(key, message){
-    // Synchronous approximation using subtle is async; we derive via async but cache.
-    // For preview we use a deterministic non-crypto hash for instant sync feedback.
-    let hash = 0;
-    for (let i = 0; i < message.length; i++) {
-        const char = message.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-    }
-    return Math.abs(hash).toString(16).padStart(8,'0');
-}
-
-async function deriveCrashPointAsync(serverSeedHash, clientSeed, nonce){
+async function deriveCrashPoint(serverSeedHash, clientSeed, nonce){
     const hex = await hmacSha256Hex(serverSeedHash || 'default', `${clientSeed}:${nonce}`);
     const u32 = parseInt(hex.slice(0,8), 16);
     const value = u32 / 0xFFFFFFFF;
@@ -221,65 +216,23 @@ async function deriveCrashPointAsync(serverSeedHash, clientSeed, nonce){
     return parseFloat(crash.toFixed(2));
 }
 
-function updatePreview(){
+function updateLive(){
     const nonce = parseInt(nonceInput.value) || 0;
-    const preview = deriveCrashPoint(serverSeedHashInput.value.trim(), clientSeedInput.value.trim(), nonce);
+    const preview = deriveCrashPointSync(serverSeedHashInput.value.trim(), clientSeedInput.value.trim(), nonce);
     roundNonceEl.innerText = nonce;
     predictedValueEl.innerText = preview.toFixed(2) + 'x';
+    predSubEl.innerText = `Nonce #${nonce} • HMAC-SHA256(serverHash, clientSeed:nonce)`;
     if (gameState === 'idle') {
         multiplierEl.innerText = preview.toFixed(2) + 'x';
         multiplierEl.className = 'multiplier';
-        statusEl.innerText = `Prepared crash: ${preview.toFixed(2)}x`;
-        statusEl.className = 'status betting';
+        statusEl.innerText = `Predicted crash: ${preview.toFixed(2)}x`;
+        statusEl.className = 'status pending';
     }
-    predictorBox.style.display = 'block';
-}
-
-async function generateRound(){
-    const nonce = parseInt(nonceInput.value) || 0;
-    const crash = await deriveCrashPointAsync(serverSeedHashInput.value.trim(), clientSeedInput.value.trim(), nonce);
-    return { nonce, crash };
-}
-
-function startGame(crash){
-    gameState = 'flying';
-    crashPoint = crash;
-    currentMultiplier = 1;
-    startTime = performance.now();
-    betPlaced = true;
-    betBtn.disabled = true;
-    cashoutBtn.disabled = false;
-    cashoutBtn.innerText = 'Cashout';
-    statusEl.innerText = 'Flying...';
-    statusEl.className = 'status flying';
-    multiplierEl.className = 'multiplier';
-    roundNonceEl.innerText = currentNonce;
+    predictorBox.classList.remove('hidden');
     serverHashBox.innerText = 'Server seed hash: ' + (serverSeedHashInput.value.trim() || '(empty)');
-
-    cancelAnimationFrame(animationFrame);
-    function loop(now){
-        const elapsed = (now - startTime) / 1000;
-        // Exponential climb: multiplier grows faster over time
-        currentMultiplier = 1 + (elapsed * 1.2) + (elapsed * elapsed * 0.15);
-        if (currentMultiplier >= crashPoint){
-            currentMultiplier = crashPoint;
-            multiplierEl.innerText = currentMultiplier.toFixed(2) + 'x';
-            multiplierEl.className = 'multiplier crashed';
-            statusEl.innerText = `Crashed at ${crashPoint.toFixed(2)}x`;
-            statusEl.className = 'status crashed';
-            endGame(false);
-            return;
-        }
-        multiplierEl.innerText = currentMultiplier.toFixed(2) + 'x';
-        if (currentMultiplier >= autoCashout && autoCashout > 0){
-            // auto cashout handled below via manual check; here we just keep flying
-        }
-        animationFrame = requestAnimationFrame(loop);
-    }
-    animationFrame = requestAnimationFrame(loop);
 }
 
-function placeBet(){
+async function startRound(){
     if (gameState !== 'idle') return;
     const amount = parseFloat(betAmountInput.value) || 0;
     const ac = parseFloat(autoCashoutInput.value) || 0;
@@ -287,10 +240,38 @@ function placeBet(){
     betAmount = amount;
     autoCashout = ac;
     balance -= amount;
-    updateBalanceUI();
-    betBtn.disabled = true;
+    updateBalance();
+
+    gameState = 'flying';
+    roundBtn.disabled = true;
     cashoutBtn.disabled = false;
-    generateRound().then(startGame);
+    predictorBox.classList.add('hidden');
+
+    const crash = await deriveCrashPoint(serverSeedHashInput.value.trim(), clientSeedInput.value.trim(), currentNonce);
+    crashPoint = crash;
+    currentMultiplier = 1;
+    startTime = performance.now();
+    statusEl.innerText = 'Round flying...';
+    statusEl.className = 'status flying';
+    roundNonceEl.innerText = currentNonce;
+
+    cancelAnimationFrame(raf);
+    function loop(now){
+        const elapsed = (now - startTime) / 1000;
+        currentMultiplier = 1 + (elapsed * 1.1) + (elapsed * elapsed * 0.12);
+        if (currentMultiplier >= crashPoint){
+            currentMultiplier = crashPoint;
+            multiplierEl.innerText = currentMultiplier.toFixed(2) + 'x';
+            multiplierEl.className = 'multiplier crashed';
+            statusEl.innerText = `Crashed at ${crashPoint.toFixed(2)}x`;
+            statusEl.className = 'status crashed';
+            endRound(false);
+            return;
+        }
+        multiplierEl.innerText = currentMultiplier.toFixed(2) + 'x';
+        raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
 }
 
 function cashout(){
@@ -298,43 +279,45 @@ function cashout(){
     const payout = betAmount * currentMultiplier;
     balance += payout;
     gameState = 'crashed';
-    cancelAnimationFrame(animationFrame);
-    multiplierEl.className = 'multiplier cashing';
+    cancelAnimationFrame(raf);
+    multiplierEl.className = 'multiplier cashed';
     statusEl.innerText = `Cashed out at ${currentMultiplier.toFixed(2)}x (+${(payout - betAmount).toFixed(2)})`;
     statusEl.className = 'status betting';
-    betBtn.disabled = false;
+    roundBtn.disabled = false;
     cashoutBtn.disabled = true;
-    updateBalanceUI();
-    recordRound(currentMultiplier, true);
-}
-
-function endGame(hitAutoCashout){
-    gameState = 'crashed';
-    betBtn.disabled = false;
-    cashoutBtn.disabled = true;
-    if (!hitAutoCashout) {
-        statusEl.innerText = `Crashed at ${crashPoint.toFixed(2)}x - Bet lost`;
-        statusEl.className = 'status crashed';
-        recordRound(crashPoint, false);
-    }
-    updateBalanceUI();
-}
-
-function recordRound(mult, won){
-    rounds.unshift({ nonce: currentNonce, crash: mult, won });
-    if (rounds.length > 50) rounds.pop();
-    renderHistory();
-    if (won) { wonEl.innerText = parseInt(wonEl.innerText) + 1; }
-    else { lostEl.innerText = parseInt(lostEl.innerText) + 1; }
+    updateBalance();
+    addHistory(currentMultiplier, true);
     currentNonce++;
     nonceInput.value = currentNonce;
-    updatePreview();
-    predictorBox.style.display = 'block';
+    updateLive();
+}
+
+function endRound(won){
+    gameState = 'crashed';
+    roundBtn.disabled = false;
+    cashoutBtn.disabled = true;
+    if (!won){
+        statusEl.innerText = `Crashed at ${crashPoint.toFixed(2)}x - lost`;
+        statusEl.className = 'status crashed';
+        addHistory(crashPoint, false);
+    }
+    updateBalance();
+    currentNonce++;
+    nonceInput.value = currentNonce;
+    updateLive();
+}
+
+function addHistory(mult, won){
+    history.unshift({ nonce: currentNonce, crash: mult, won });
+    if (history.length > 30) history.pop();
+    renderHistory();
+    if (won){ wonEl.innerText = parseInt(wonEl.innerText) + 1; }
+    else { lostEl.innerText = parseInt(lostEl.innerText) + 1; }
 }
 
 function renderHistory(){
     historyList.innerHTML = '';
-    rounds.forEach(r => {
+    history.forEach(r => {
         const div = document.createElement('div');
         div.className = 'history-item';
         const cls = r.won ? 'green' : 'red';
@@ -343,7 +326,7 @@ function renderHistory(){
     });
 }
 
-function updateBalanceUI(){
+function updateBalance(){
     balanceEl.innerText = balance.toFixed(2);
 }
 
@@ -351,38 +334,37 @@ function adjustNonce(delta){
     let v = parseInt(nonceInput.value)||0;
     v = Math.max(0, v+delta);
     nonceInput.value = v;
-    updatePreview();
+    updateLive();
 }
 
 async function verifyRound(){
     const nonce = parseInt(document.getElementById('verifyNonce').value.trim());
     const revealSeed = document.getElementById('revealServerSeed').value.trim();
-    if (!revealSeed){ verifyResultEl.innerText='Enter unhashed server seed.'; verifyResultEl.style.color='#f87171'; return; }
-    if (isNaN(nonce)){ verifyResultEl.innerText='Enter round nonce.'; verifyResultEl.style.color='#f87171'; return; }
+    if (!revealSeed){ verifyResultEl.innerText='Enter unhashed server seed.'; verifyResultEl.style.color='#ef4444'; return; }
+    if (isNaN(nonce)){ verifyResultEl.innerText='Enter round nonce.'; verifyResultEl.style.color='#ef4444'; return; }
 
-    // Hash commitment check
     const enc = new TextEncoder();
     const hashBuffer = await crypto.subtle.digest('SHA-256', enc.encode(revealSeed));
     const revealedHash = Array.from(new Uint8Array(hashBuffer)).map(b=>b.toString(16).padStart(2,'0')).join('');
     if (revealedHash !== serverSeedHashInput.value.trim()){
-        verifyResultEl.innerText='FAILED: seed does not match commitment hash.';
-        verifyResultEl.style.color='#f87171';
+        verifyResultEl.innerText='FAILED: seed does not match hash commitment.';
+        verifyResultEl.style.color='#ef4444';
         return;
     }
 
     const clientSeed = clientSeedInput.value.trim();
-    const crash = await deriveCrashPointAsync(revealSeed, clientSeed, nonce);
-    const round = rounds.find(r => r.nonce === nonce);
-    const match = round && Math.abs(round.crash - crash) < 0.001;
+    const crash = await deriveCrashPoint(revealSeed, clientSeed, nonce);
+    const r = history.find(x => x.nonce === nonce);
+    const match = r && Math.abs(r.crash - crash) < 0.001;
     verifyResultEl.innerHTML = match
-        ? `VERIFIED: Round #${nonce} crash was ${crash.toFixed(2)}x and matches.`
-        : `Round #${nonce} crash derives to ${crash.toFixed(2)}x (no stored history to compare).`;
-    verifyResultEl.style.color = match ? '#34d399' : '#94a3b8';
+        ? `VERIFIED: Round #${nonce} = ${crash.toFixed(2)}x`
+        : `Round #${nonce} derives to ${crash.toFixed(2)}x`;
+    verifyResultEl.style.color = match ? '#22c55e' : '#94a3b8';
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
     currentNonce = parseInt(nonceInput.value)||0;
-    updatePreview();
+    updateLive();
 });
 </script>
 
