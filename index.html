@@ -768,8 +768,9 @@ function advanceNonceByOneOnce() {
 function updateLowThirdLowestMath(forecastList) {
     const pockets = forecastList.map(r => { if (r.pocket === "00") return 37; return Number(r.pocket); });
     const uniqueSorted = [...new Set(pockets)].sort((a, b) => a - b);
+    if (uniqueSorted.length === 0) return;
     const firstUnique = uniqueSorted[0];
-    const thirdUnique = uniqueSorted[2] !== undefined ? uniqueSorted[2] : firstUnique;
+    const thirdUnique = uniqueSorted.length >= 3 ? uniqueSorted[2] : uniqueSorted[uniqueSorted.length - 1];
     const listElem = document.getElementById('forecastNumbersList');
     if (listElem) listElem.innerText = forecastList.map(r => r.pocket).join(', ');
     const getColorForPocket = (val) => {
@@ -789,6 +790,7 @@ function updateLowThirdLowestMath(forecastList) {
     document.getElementById('combinedAnswerVal').innerText = combinedSum;
     document.getElementById('combinedAnswerVal').style.color = combinedColor.hex;
     document.getElementById('combinedAnswerColor').innerText = combinedColor.color;
+    console.log('Lowest math update | forecast:', forecastList.length, 'unique:', uniqueSorted, '1st:', firstUnique, '3rd:', thirdUnique, 'sum:', combinedSum);
 }
 
 function updateSnippet(serverSeed, clientSeed, nonce, casinoMode, wheelVariant) {
