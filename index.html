@@ -774,11 +774,11 @@ function updateLowThirdLowestMath(forecastList) {
         return Number(r.pocket);
     });
 
-    // Sort ascending
-    const sorted = [...pockets].sort((a, b) => a - b);
+    // Build unique sorted ascending values
+    const uniqueSorted = [...new Set(pockets)].sort((a, b) => a - b);
 
-    const lowest = sorted[0];
-    const thirdLowest = sorted[2];
+    const lowest = uniqueSorted[0];
+    const secondUnique = uniqueSorted[1] !== undefined ? uniqueSorted[1] : lowest;
 
     // Build display list
     const listElem = document.getElementById('forecastNumbersList');
@@ -791,22 +791,20 @@ function updateLowThirdLowestMath(forecastList) {
     };
 
     const lowestColor = getColorForPocket(lowest);
-    const thirdColor = getColorForPocket(thirdLowest);
+    const secondColor = getColorForPocket(secondUnique);
 
     // Display lowest
     document.getElementById('lowestNumVal').innerText = lowest === 37 ? '00' : lowest;
     document.getElementById('lowestNumVal').style.color = lowestColor.hex;
     document.getElementById('lowestNumColor').innerText = lowestColor.color;
 
-    // Display third lowest
-    document.getElementById('thirdLowestNumVal').innerText = thirdLowest === 37 ? '00' : thirdLowest;
-    document.getElementById('thirdLowestNumVal').style.color = thirdColor.hex;
-    document.getElementById('thirdLowestNumColor').innerText = thirdColor.color;
+    // Display second unique lowest
+    document.getElementById('thirdLowestNumVal').innerText = secondUnique === 37 ? '00' : secondUnique;
+    document.getElementById('thirdLowestNumVal').style.color = secondColor.hex;
+    document.getElementById('thirdLowestNumColor').innerText = secondColor.color;
 
-    // Selected number: use lowest if it appears at least twice in the sorted list (duplicate logic like 1,9,9,18,32 -> use 9)
-    // Otherwise use third lowest
-    const lowestCount = pockets.filter(p => p === lowest).length;
-    let selected = lowestCount >= 2 ? thirdLowest : lowest;
+    // Selected number: prefer lowest, fallback to second unique
+    const selected = lowest;
     const selectedColor = getColorForPocket(selected);
 
     document.getElementById('selectedMathNumVal').innerText = selected === 37 ? '00' : selected;
