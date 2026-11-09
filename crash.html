@@ -54,6 +54,14 @@
         <input type="number" id="sRound" value="10" min="1" oninput="runCrash()">
       </div>
     </div>
+    <div style="margin-top:10px;display:flex;gap:10px;align-items:center;">
+      <button id="autoBtn" onclick="toggleAuto()" style="background:#10b981;padding:8px 14px;border-radius:8px;color:#fff;border:none;font-weight:bold;cursor:pointer;">▶ Auto Advance</button>
+      <select id="autoSpeed" style="padding:6px 8px;border-radius:6px;background:#080b10;color:#fff;border:1px solid #1e293b;">
+        <option value="1000">1s</option>
+        <option value="500" selected>0.5s</option>
+        <option value="200">0.2s</option>
+      </select>
+    </div>
     <div class="grid-4" style="margin-top:10px;">
       <div class="stat"><label style="color:#f87171;">NEXT CRASH POINT</label><div class="v red" id="outVal">--x</div><div class="s">Computed multiplier</div></div>
       <div class="stat"><label style="color:#38bdf8;">ROUND HASH</label><div class="v blue" id="rHashVal" style="font-size:1rem;word-break:break-all;">--</div><div class="s">current chained digest</div></div>
@@ -91,6 +99,9 @@ function readU64BE(bytes,offset){let v=0n;for(let i=0;i<8;i++)v=(v<<8n)|BigInt(b
 function computeCrashOutcome(roundHashHex,globalSeedHex){const roundHash=hexToBytes(roundHashHex);const globalSeed=hexToBytes(globalSeedHex);const combined=new Uint8Array(roundHash.length+globalSeed.length);combined.set(roundHash);combined.set(globalSeed,roundHash.length);const finalHash=blake2b(combined,32);const den=Math.pow(2,64)-1;const x=Number(readU64BE(finalHash,0))/den;const outcome=Math.min(1e6,Math.max(1.0,Math.floor(100.0*(1.0-0.05)/x)/100.0));return {finalHash,x,outcome};}
 function nextRoundHash(roundHashHex){return bytesToHex(blake2b(hexToBytes(roundHashHex),32));}
 function fmt(v){return v.toFixed(2).replace(/\.0+$/,'').replace(/(\.\d*?[1-9])0+$/,'$1')||'0';}
+let autoTimer=null;
+function advanceRound(){const r=document.getElementById('rHash').value.trim();const nx=nextRoundHash(r);document.getElementById('rHash').value=nx;document.getElementById('sRound').value=(parseInt(document.getElementById('sRound').value)||10)+1;runCrash();}
+function toggleAuto(){const btn=document.getElementById('autoBtn');if(autoTimer){clearInterval(autoTimer);autoTimer=null;btn.textContent='▶ Auto Advance';btn.style.background='#10b981';}else{const speed=parseInt(document.getElementById('autoSpeed').value)||500;btn.textContent='⏸ Stop';btn.style.background='#ef4444';autoTimer=setInterval(()=>{advanceRound();},speed);}}
 function runCrash(){const g=document.getElementById('gSeed').value.trim();const r=document.getElementById('rHash').value.trim();const s=parseInt(document.getElementById('sRound').value)||10;try{const res=computeCrashOutcome(r,g);const nx=nextRoundHash(r);document.getElementById('outVal').textContent=fmt(res.outcome)+'x';document.getElementById('rHashVal').textContent=r;document.getElementById('fHashVal').textContent=bytesToHex(res.finalHash);document.getElementById('xVal').textContent=res.x.toFixed(10);document.getElementById('chain').textContent=`Round #${s} → hash ${r.slice(0,16)}... → outcome ${fmt(res.outcome)}x → next hash ${nx.slice(0,16)}...`;}catch(e){console.error('Crash error',e);}}
 runCrash();
 </script>
